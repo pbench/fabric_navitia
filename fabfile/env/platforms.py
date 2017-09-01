@@ -374,6 +374,7 @@ env.tyr_default_handler = 'default'
 env.tyr_default_handler_instance = 'instance'
 env.tyr_syslog_facility = 'local7'
 
+env.use_json_log = False
 
 # tyr share the same database as jormungandr
 env.tyr_postgresql_database = 'jormungandr'
