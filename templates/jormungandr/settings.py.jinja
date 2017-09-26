@@ -35,6 +35,11 @@ LOGGER = {
         },
         'syslog': {
             'format': 'jormungandr: [%(asctime)s] [%(request_id)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s'
+        },
+        'json': {
+            '()': 'jormungandr.logging_utils.CustomJsonFormatter',
+            'format': {{ env.jormungandr_log_format }},
+            'extras': {{ env.jormungandr_log_extras }},
         }
     },
     'filters': {
@@ -58,7 +63,7 @@ LOGGER = {
         'class': 'logging.handlers.SysLogHandler',
         'address': '/dev/log',
         'facility': "{{env.jormungandr_syslog_facility}}",
-        'formatter': 'syslog',
+        'formatter': '{{ env.jormungandr_syslog_formatter }}',
         'filters': ['IdFilter']
         },
         {% endif %}

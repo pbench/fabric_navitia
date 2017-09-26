@@ -293,6 +293,9 @@ env.jormungandr_instance_socket = 'localhost'
 
 env.jormungandr_default_handler = 'default'
 env.jormungandr_syslog_facility = 'local7'
+env.jormungandr_syslog_formatter = 'syslog'
+env.jormungandr_log_format = '[%(asctime)s] [%(request_id)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s'
+env.jormungandr_log_extras = ''
 
 #used for limiting the number of connections to the database
 #by default we keep the default values
@@ -374,6 +377,7 @@ env.tyr_default_handler = 'default'
 env.tyr_default_handler_instance = 'instance'
 env.tyr_syslog_facility = 'local7'
 
+env.use_json_log = False
 
 # tyr share the same database as jormungandr
 env.tyr_postgresql_database = 'jormungandr'
