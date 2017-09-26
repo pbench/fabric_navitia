@@ -63,17 +63,7 @@ LOGGER = {
         'class': 'logging.handlers.SysLogHandler',
         'address': '/dev/log',
         'facility': "{{env.jormungandr_syslog_facility}}",
-        'formatter': 'syslog',
-        'filters': ['IdFilter']
-        },
-        {% endif %}
-        {% if env.use_json_log %}
-        'syslog': {
-        'level': "{{env.jormungandr_log_level}}",
-        'class': 'logging.handlers.SysLogHandler',
-        'address': '/dev/log',
-        'facility': "{{env.jormungandr_syslog_facility}}",
-        'formatter': 'json',
+        'formatter': '{{ env.jormungandr_syslog_formatter }}',
         'filters': ['IdFilter']
         },
         {% endif %}

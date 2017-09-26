@@ -293,6 +293,7 @@ env.jormungandr_instance_socket = 'localhost'
 
 env.jormungandr_default_handler = 'default'
 env.jormungandr_syslog_facility = 'local7'
+env.jormungandr_syslog_formatter = 'syslog'
 env.jormungandr_log_format = '[%(asctime)s] [%(request_id)s] [%(levelname)5s] [%(process)5s] [%(name)10s] %(message)s'
 env.jormungandr_log_extras = ''
 
