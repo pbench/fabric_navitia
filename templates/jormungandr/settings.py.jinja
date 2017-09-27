@@ -38,8 +38,8 @@ LOGGER = {
         },
         'json': {
             '()': 'jormungandr.logging_utils.CustomJsonFormatter',
-            'format': {{ env.jormungandr_log_format }},
-            'extras': {{ env.jormungandr_log_extras }},
+            'format': '{{ env.jormungandr_log_format }}',
+            'extras': '{{ env.jormungandr_log_extras }}',
         }
     },
     'filters': {
