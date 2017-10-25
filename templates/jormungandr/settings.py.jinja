@@ -42,7 +42,7 @@ LOGGER = {
 	    {% if env.jormungandr_log_extras %}
             'extras': {{ env.jormungandr_log_extras }},
 	    {% else %}
-	    'extras': None,
+	    'extras': '',
 	    {% endif %}
         }
     },
