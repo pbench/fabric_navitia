@@ -18,10 +18,10 @@ SQLALCHEMY_DATABASE_URI='postgresql://{{env.tyr_postgresql_user}}:{{env.tyr_post
 #désactivation de l'authentification
 PUBLIC={{env.jormungandr_is_public}}
 
-
-{% if env.jormungandr_pool_size %}
-#limit the connection pool size of sqlalchemy
-SQLALCHEMY_POOL_SIZE = {{env.jormungandr_pool_size}}
+{% if env.sqlalchemy_pool %}
+#Desactivation pool sql on jorgmungandr
+ from sqlalchemy.pool import NullPool
+ SQLALCHEMY_POOL_SIZE = {{ env.sqlalchemy_pool }}
 {% endif %}
 
 # logger configuration
