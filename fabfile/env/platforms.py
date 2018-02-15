@@ -304,6 +304,8 @@ env.jormungandr_pool_size = None
 env.jormungandr_timeo_cache_timeout = 60
 env.jormungandr_bss_provider = None
 
+env.sqlalchemy_pool = None
+
 ##############################
 # kraken
 ##############################
