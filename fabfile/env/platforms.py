@@ -38,6 +38,8 @@ from fabric.colors import yellow
 from fabric.decorators import task
 from fabric.operations import run
 
+env.uwsgi_logfiles = ['/var/log/uwsgi/tyr.log','/var/log/uwsgi/jormungandr.log']
+
 env.distrib = 'ubuntu14.04'
 env.KRAKEN_USER = 'www-data'
 env.TYR_USER = env.KRAKEN_USER

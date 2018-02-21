@@ -279,6 +279,7 @@ def upgrade_tyr(up_confs=False, pilot_tyr_beat=True, reload=True):
 @task
 def restart_tyr(tyr_beat=True):
     # restart tyr workers and reload with newer binaries
+    execute(chown_logs_uwsgi)
     execute(tyr.restart_tyr_worker)
     if tyr_beat:
         execute(tyr.restart_tyr_beat)

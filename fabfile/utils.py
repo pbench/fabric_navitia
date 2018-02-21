@@ -59,6 +59,14 @@ from fabtools import require
 from fabtools.require.files import temporary_directory
 from fabtools.utils import run_as_root
 
+# Ajoute suite https://github.com/CanalTP/navitia_deployment_conf/pull/365 , permission denied
+
+@task
+@roles('tyr', 'eng', 'ws')
+def chown_logs_uwsgi():
+   for file in env.uwsgi_logfiles:
+     run ('chown www-data: {}'.format(file))
+
 
 # thanks
 # http://freepythontips.wordpress.com/2013/07/28/generating-a-random-string/
