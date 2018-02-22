@@ -294,6 +294,7 @@ def restart_kraken():
 def restart_jormungandr():
     """ This task is now SAFE on PROD
     """
+    execute(chown_logs_uwsgi)
     execute(jormungandr.reload_jormun_safe_all)
 
 
