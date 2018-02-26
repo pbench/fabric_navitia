@@ -610,6 +610,7 @@ def update_tyr_confs():
     for instance in env.instances.values():
         execute_flat(update_tyr_instance_conf, instance)
     execute(update_cities_conf)
+    execute(chown_logs_uwsgi)
     execute(restart_tyr_worker)
     update_init(host='tyr')
 

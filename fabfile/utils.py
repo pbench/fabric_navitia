@@ -59,7 +59,7 @@ from fabtools import require
 from fabtools.require.files import temporary_directory
 from fabtools.utils import run_as_root
 
-# Ajoute suite https://github.com/CanalTP/navitia_deployment_conf/pull/365 , permission denied
+# change uwsgi log file permission
 
 @task
 @roles('tyr', 'eng', 'ws')
