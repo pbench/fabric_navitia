@@ -21,7 +21,7 @@ PUBLIC={{env.jormungandr_is_public}}
 {% if env.sqlalchemy_pool %}
 #Desactivation pool sql on jorgmungandr
  from sqlalchemy.pool import NullPool
- SQLALCHEMY_POOL_SIZE = {{ env.sqlalchemy_pool }}
+ SQLALCHEMY_POOLCLASS = {{ env.sqlalchemy_pool }}
 {% endif %}
 
 # logger configuration
