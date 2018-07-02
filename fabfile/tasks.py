@@ -33,7 +33,7 @@ from fabric.api import env, task, execute, abort
 from fabric.colors import blue, red, yellow, green
 from fabric.context_managers import settings
 from fabric.contrib.files import exists
-from component import tyr, jormungandr, kraken, db
+from component import tyr, jormungandr, kraken, db, haproxy
 from component.load_balancer import _adc_connection
 from utils import (get_bool_from_cli, show_version, get_host_addr,
                    show_dead_kraken_status, TimeCollector, compute_instance_status,
