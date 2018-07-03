@@ -29,7 +29,7 @@
 # https://groups.google.com/d/forum/navitia
 # www.navitia.io
 
-from fabric.api import env, task, roles
+from fabric.api import env, task, roles, sudo
 from fabfile.utils import _upload_template
 from fabtools import require
 
@@ -45,7 +45,7 @@ def configure():
 @task
 @roles('haproxy')
 def setup():
-    require.deb.packages('haproxy', update=True)
+    require.deb.packages(['haproxy'], update=True)
 
 
 @task
