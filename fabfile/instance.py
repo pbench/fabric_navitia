@@ -44,6 +44,7 @@ class Instance:
         self.name = name
         self.db_password = db_password
         self.is_free = is_free
+        self.zmq_port = zmq_socket_port
         if env.use_zmq_socket_file:
             self.kraken_zmq_socket = 'ipc://{kraken_dir}/{instance}/kraken.sock'.format(
                 kraken_dir=env.kraken_basedir, instance=self.name)
