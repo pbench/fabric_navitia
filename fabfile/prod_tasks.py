@@ -136,6 +136,6 @@ def switch_to_third_phase(ws_hosts_2):
 
 @task
 def enable_all_nodes(eng_hosts, ws_hosts_1,  ws_hosts_2):
-    execute(enable_nodes, eng_hosts)
+    execute(enable_kraken_haproxy, eng_hosts)
     execute(restart_jormungandr, ws_hosts_2)
     execute(restart_jormungandr, ws_hosts_1)
