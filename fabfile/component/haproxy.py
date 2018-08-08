@@ -75,10 +75,10 @@ def status():
 
 @task
 @roles('haproxy')
-def enable_server(eng_hosts):
+def enable_kraken(eng_hosts):
     sudo("haproxyctl enable all {}".format(eng_hosts))
 
 @task
 @roles('haproxy')
-def disable_server(eng_hosts):
+def disable_kraken(eng_hosts):
     sudo("haproxyctl disable all {}".format(eng_hosts))
