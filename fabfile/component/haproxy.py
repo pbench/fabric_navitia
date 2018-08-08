@@ -45,7 +45,7 @@ def configure():
 @task
 @roles('haproxy')
 def setup():
-    require.deb.packages(['haproxy'], update=True)
+    require.deb.packages(['haproxy', 'haproxyctl'], update=True)
 
 
 @task
@@ -72,3 +72,13 @@ def stop():
 @roles('haproxy')
 def status():
     sudo("systemctl status haproxy")
+
+@task
+@roles('haproxy')
+def enable_kraken(eng_host):
+    sudo("haproxyctl enable all {}".format(eng_host))
+
+@task
+@roles('haproxy')
+def disable_kraken(eng_host):
+    sudo("haproxyctl disable all {}".format(eng_host))

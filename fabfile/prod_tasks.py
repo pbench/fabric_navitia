@@ -78,6 +78,15 @@ def remove_kraken_vip(name):
 #
 ###################################################
 
+@task
+def disable_kraken_haproxy(krakens):
+    for kraken in krakens:
+        execute(haproxy.disable_kraken, kraken)
+
+@task
+def enable_kraken_haproxy(krakens):
+    for kraken in krakens:
+        execute(haproxy.enable_kraken, kraken)
 
 @task
 def disable_nodes(nodes):
@@ -102,7 +111,8 @@ def restart_jormungandr(nodes, safe=True):
 
 @task
 def switch_to_first_phase(eng_hosts_1, ws_hosts_1, ws_hosts_2):
-    execute(disable_nodes, eng_hosts_1)
+    #execute(disable_nodes, eng_hosts_1)
+    execute(disable_kraken_haproxy, eng_hosts_1)
     execute(restart_jormungandr, ws_hosts_2)
     execute(disable_nodes, ws_hosts_1)
 
@@ -110,8 +120,10 @@ def switch_to_first_phase(eng_hosts_1, ws_hosts_1, ws_hosts_2):
 @task
 def switch_to_second_phase(eng_hosts_1, eng_hosts_2, ws_hosts_1,  ws_hosts_2):
     # first, enable / disable kraken nodes
-    execute(enable_nodes, eng_hosts_1)
-    execute(disable_nodes, eng_hosts_2)
+    #execute(enable_nodes, eng_hosts_1)
+    execute(enable_kraken_haproxy, eng_hosts_1)
+    #execute(disable_nodes, eng_hosts_2)
+    execute(disable_kraken_haproxy, eng_hosts_2)
     # then enable / disable jormun nodes
     execute(enable_nodes, ws_hosts_1)
     execute(disable_nodes, ws_hosts_2)
@@ -124,6 +136,6 @@ def switch_to_third_phase(ws_hosts_2):
 
 @task
 def enable_all_nodes(eng_hosts, ws_hosts_1,  ws_hosts_2):
-    execute(enable_nodes, eng_hosts)
+    execute(enable_kraken_haproxy, eng_hosts)
     execute(restart_jormungandr, ws_hosts_2)
     execute(restart_jormungandr, ws_hosts_1)

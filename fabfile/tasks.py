@@ -192,7 +192,8 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
 
         env.roledefs['eng'] = env.eng_hosts
         if not manual_lb:
-            execute(enable_nodes, env.eng_hosts)
+            #execute(enable_nodes, env.eng_hosts)
+            execute(enable_kraken_haproxy, env.eng_hosts)
 
     # start tyr_beat even if up_tyr is False
     execute(tyr.start_tyr_beat)
