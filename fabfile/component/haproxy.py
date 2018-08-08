@@ -72,3 +72,13 @@ def stop():
 @roles('haproxy')
 def status():
     sudo("systemctl status haproxy")
+
+@task
+@roles('haproxy')
+def enable_server(eng_hosts):
+    sudo("haproxyctl enable all {}".format(eng_hosts))
+
+@task
+@roles('haproxy')
+def disable_server(eng_hosts):
+    sudo("haproxyctl disable all {}".format(eng_hosts))

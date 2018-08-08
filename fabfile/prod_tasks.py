@@ -78,6 +78,10 @@ def remove_kraken_vip(name):
 #
 ###################################################
 
+@task
+def disable_frontend_haproxy(ed):
+    for node in nodes:
+        execute(load_balancer.disable_node, node)
 
 @task
 def disable_nodes(nodes):
