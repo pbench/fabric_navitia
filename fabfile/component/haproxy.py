@@ -45,7 +45,7 @@ def configure():
 @task
 @roles('haproxy')
 def setup():
-    require.deb.packages(['haproxy'], update=True)
+    require.deb.packages(['haproxy', 'haproxyctl'], update=True)
 
 
 @task
