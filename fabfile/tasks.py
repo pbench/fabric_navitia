@@ -149,7 +149,7 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
         if manual_lb:
             raw_input(yellow("Please disable ENG1,3/WS7-9 and enable ENG2,4/WS10-12"))
         else:
-            execute(switch_to_first_phase, env.eng_pool1, env.ws_hosts_1, env.ws_hosts_2)
+            execute(switch_to_first_phase, env.eng_haproxy1, env.ws_hosts_1, env.ws_hosts_2)
     execute(upgrade_kraken, wait=env.KRAKEN_RESTART_SCHEME, up_confs=up_confs, supervision=True)
     if check_dead:
         execute(kraken.check_dead_instances, not_loaded_instances)
@@ -171,7 +171,7 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
         if manual_lb:
             raw_input(yellow("Please enable ENG1,3/WS7-9 and disable ENG2,4/WS10-12"))
         else:
-            execute(switch_to_second_phase, env.eng_pool1, env.eng_pool2,
+            execute(switch_to_second_phase, env.eng_haproxy1, env.eng_haproxy2,
                     env.ws_hosts_1,  env.ws_hosts_2)
         execute(upgrade_jormungandr, reload=False, up_confs=up_confs)
         # need restart apache without using upgrade_jormungandr task previously
