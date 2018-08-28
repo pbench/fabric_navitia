@@ -47,7 +47,7 @@ from fabtools import require, service, files, python
 # WARNING: the way fabric_navitia imports are done as a strong influence
 #          on the resulting naming of tasks, wich can break integration tests
 from fabfile.utils import (get_bool_from_cli, _install_packages, get_real_instance,
-                           show_version, update_init, get_host_addr,
+                           update_init, get_host_addr,
                            _upload_template, start_or_stop_with_delay, idempotent_symlink)
 
 
@@ -351,7 +351,7 @@ def test_kraken(instance, fail_if_error=True, wait=False, loaded_is_ok=None, hos
     instance = get_real_instance(instance)
     wait = get_bool_from_cli(wait)
 
-    hosts = [e.split('@')[1] for e in hosts or instance.kraken_engines]
+    hosts = [h.split('@')[1] for h in hosts or instance.kraken_engines]
     will_return = len(hosts) == 1
     for host in hosts:
         request = 'http://{}:{}/{}/?instance={}'.format(host,
@@ -363,8 +363,8 @@ def test_kraken(instance, fail_if_error=True, wait=False, loaded_is_ok=None, hos
                 result = Retrying(stop_max_delay=env.KRAKEN_RESTART_DELAY * 1000,
                                   wait_fixed=1000, retry_on_result=lambda x: x is None or not x['loaded']) \
                     .call(_test_kraken, request, fail_if_error)
-            except Exception as e:
-                print(red("ERROR: could not reach {}, too many retries ! ({})".format(instance.name, e)))
+            except Exception as ex:
+                print(red("ERROR: could not reach {}, too many retries ! ({})".format(instance.name, ex)))
                 result = {'status': False}
         else:
             result = _test_kraken(request, fail_if_error)
@@ -415,6 +415,7 @@ def test_kraken(instance, fail_if_error=True, wait=False, loaded_is_ok=None, hos
             print(result)
             if fail_if_error:
                 abort('')
+        return False
 
 
 @task
@@ -431,8 +432,8 @@ def update_monitor_configuration():
 def update_eng_instance_conf(instance, host=None):
     instance = get_real_instance(instance)
     hosts = [host] if host else instance.kraken_engines
-    for host in hosts:
-        with settings(host_string=host):
+    for h in hosts:
+        with settings(host_string=h):
             require.files.directory(os.path.join(instance.kraken_basedir, instance.name),
                                     owner=env.KRAKEN_USER, group=env.KRAKEN_USER, use_sudo=True)
             _upload_template("kraken/kraken.ini.jinja", "%s/%s/kraken.ini" %
@@ -461,7 +462,6 @@ def update_eng_instance_conf(instance, host=None):
                                  },
                                  mode='755'
                 )
-            # TODO check this, make it consistent with env.use_systemd
             update_init(host='eng')
 
 
@@ -494,7 +494,6 @@ def create_eng_instance(instance):
 
             kraken = "kraken_{}".format(instance.name)
             if not service.is_running(kraken):
-                # TODO test this on systemd machines
                 if env.use_systemd:
                     sudo("systemctl enable kraken_{}.service".format(instance.name))
                 else:
@@ -543,7 +542,6 @@ def remove_kraken_instance(instance, purge_logs=False, apply_on='engines'):
 
             service.stop('kraken_{}'.format(instance.name))
             run("sleep 3")
-            # TODO test this on systemd machines
             if env.use_systemd:
                 run("systemctl disable kraken_{}.service".format(instance.name))
                 run('systemctl daemon-reload')

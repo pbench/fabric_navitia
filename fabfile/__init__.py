@@ -32,6 +32,7 @@
 # WARNING: the way fabric_navitia imports are done as a strong influence
 #          on the resulting naming of tasks, wich can break integration tests
 
+# pylint: disable=import-error
 import sys
 
 from env.platforms import *

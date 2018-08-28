@@ -186,19 +186,19 @@ def check_kraken_jormun_after_deploy(show=False):
         # If HTTP status_code Erreur.
         if response.status_code != 200:
             print(red("Request not successful : {}".format(str(response))))
-            return
+            return None
 
         result = response.json()
 
     except (ConnectionError, HTTPError) as e:
         print(red("HTTP Error {}: {}".format(e.code, e.readlines()[0])))
-        return
+        return None
     except JSONDecodeError as e:
         print(red("cannot read json response : {}".format(e)))
-        return
+        return None
     except Exception as e:
         print(red("Error when connecting to {}: {}".format(env.jormungandr_url, e)))
-        return
+        return None
 
     warn_dict = {'jormungandr': None, 'kraken': []}
 
@@ -306,7 +306,7 @@ def test_jormungandr(server, instance=None, fail_if_error=True):
                       format(ref=len(active_instance), real=len(regions)))
 
             print red('instances in diff: {}'.format(
-                set(active_instance).symmetric_difference(set([r['id'] for r in regions]))))
+                set(active_instance).symmetric_difference(set([i['id'] for i in regions]))))
 
             if fail_if_error:
                 exit(1)
@@ -314,14 +314,14 @@ def test_jormungandr(server, instance=None, fail_if_error=True):
             return False
         else:
             # We check that at least one is ok
-            statuses = [(r['id'], r['status']) for r in regions]
+            statuses = [(i['id'], i['status']) for i in regions]
 
             if all(map(lambda p: p[1] == 'running', statuses)):
                 print green('all instances are ok, everything is fine')
                 return True
 
-            print blue('running instances: {}'.format([r[0] for r in statuses if r[1] == 'running']))
-            print red('KO instances: {}'.format([r for r in statuses if r[1] != 'running']))
+            print blue('running instances: {}'.format([s[0] for s in statuses if s[1] == 'running']))
+            print red('KO instances: {}'.format([s for s in statuses if s[1] != 'running']))
 
             if fail_if_error:
                 exit(1)

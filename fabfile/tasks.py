@@ -39,7 +39,7 @@ from utils import (get_bool_from_cli, show_version, get_host_addr,
                    show_dead_kraken_status, TimeCollector, compute_instance_status,
                    show_time_deploy, host_app_mapping, send_mail,
                    supervision_downtime, get_real_instance)
-from prod_tasks import (remove_kraken_vip, switch_to_first_phase,
+from prod_tasks import (remove_kraken_vip, switch_to_first_phase, enable_kraken_haproxy,
                         switch_to_second_phase, switch_to_third_phase, enable_nodes)
 import random
 import requests
@@ -112,7 +112,7 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
 
     # check one instance on each WS
-    #TODO: Check all instance not only random one.
+    #TODO: Check all instance not only random one. #pylint: disable=fixme
     for server in env.roledefs['ws']:
         instance = random.choice(env.instances.values())
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
@@ -220,7 +220,6 @@ def broadcast_email(kind, status=None):
 
 @task
 def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False):
-    # TODO only_bina is highly error prone
     """ deploy an upgrade of tyr
     """
     if not time_dict:
@@ -242,7 +241,7 @@ def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=Fa
     time_dict.register_end('bina')
     if only_bina:
         print show_time_deploy(time_dict)
-        return
+        return None
     if check_bina and instances_failed:
         abort(red("\n  ERROR: {} binarisation(s) have failed.".format(len(instances_failed))))
     return time_dict
@@ -422,7 +421,6 @@ def update_all_configurations():
     update all configuration and restart all services
     does not deploy any packages
     """
-    # TODO refactor this to follow a good orchestration for production
     execute(kraken.get_no_data_instances)
     execute(jormungandr.update_jormungandr_conf)
     execute(kraken.update_monitor_configuration)
