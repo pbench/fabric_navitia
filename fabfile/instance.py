@@ -40,11 +40,12 @@ class Instance:
                  zmq_socket_port=None, db_name=None, db_user=None, source_dir=None,
                  enable_realtime=False, realtime_proxies=[], street_network=None, ridesharing=None,
                  cache_raptor=None, zmq_server=None,
-                 kraken_threads=None, autocomplete=None):
+                 kraken_threads=None, autocomplete=None, kraken_prometheus_binding=None):
         self.name = name
         self.db_password = db_password
         self.is_free = is_free
         self.zmq_port = zmq_socket_port
+        self.kraken_prometheus_binding = kraken_prometheus_binding
         if env.use_zmq_socket_file:
             self.kraken_zmq_socket = 'ipc://{kraken_dir}/{instance}/kraken.sock'.format(
                 kraken_dir=env.kraken_basedir, instance=self.name)
