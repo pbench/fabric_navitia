@@ -214,6 +214,9 @@ env.redis_socket_timeout = 0.1
 env.ed_basedir = '/srv/ed'
 env.ed_datadir = '/srv/data'
 
+# shift applied to the zmq port of a kraken to compute the prometheus port
+env.kraken_prometheus_shift = 10000
+
 # defines additional jormungandr settings (KEY = value)
 env.jormungandr_additional_settings = {}
 
