@@ -39,7 +39,7 @@ from utils import (get_bool_from_cli, show_version, get_host_addr,
                    show_dead_kraken_status, TimeCollector, compute_instance_status,
                    show_time_deploy, host_app_mapping, send_mail,
                    supervision_downtime, get_real_instance)
-from prod_tasks import (remove_kraken_vip, switch_to_first_phase,
+from prod_tasks import (remove_kraken_vip, switch_to_first_phase, enable_kraken_haproxy,
                         switch_to_second_phase, switch_to_third_phase, enable_nodes)
 import random
 import requests
