@@ -68,6 +68,9 @@ def update_jormungandr_conf():
                      })
     _upload_template('jormungandr/settings.py.jinja', env.jormungandr_settings_file,
                      context={'env': env})
+    if env.newrelic_key: # Only upload newrelic config if a license key is provided
+        _upload_template('jormungandr/newrelic.ini.jinja', env.jormungandr_newrelic_config_file,
+                         context={'env': env})
 
     if env.uwsgi_enable:
         # Add uwsgi config for jormungandr
