@@ -314,14 +314,16 @@ def test_jormungandr(server, instance=None, fail_if_error=True):
             return False
         else:
             # We check that at least one is ok
-            statuses = [(i['id'], i['status']) for i in regions]
+            statuses = [(region['id'], region['status']) for region in regions]
 
             if all(map(lambda p: p[1] == 'running', statuses)):
                 print green('all instances are ok, everything is fine')
                 return True
 
-            print blue('running instances: {}'.format([s[0] for s in statuses if s[1] == 'running']))
-            print red('KO instances: {}'.format([s for s in statuses if s[1] != 'running']))
+            print blue('running instances: {}'.format(
+                [status[0] for status in statuses if status[1] == 'running']
+            ))
+            print red('KO instances: {}'.format([status for status in statuses if status[1] != 'running']))
 
             if fail_if_error:
                 exit(1)
