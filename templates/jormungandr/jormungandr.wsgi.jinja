@@ -6,6 +6,7 @@
 import _strptime
 
 import os
+{% if not env.newrelic_key %}
 try:
     config_file = '{{env.jormungandr_base_dir}}/newrelic.ini'
     import newrelic.agent
@@ -15,6 +16,7 @@ try:
         print("%s doesn't not exist, newrelic disabled" % config_file)
 except ImportError:
     pass
+{% endif %}
 
 import sys
 sys.path.append('{{env.jormungandr_base_dir}}')

@@ -260,6 +260,8 @@ env.jormungandr_apache_config_file = '/etc/apache2/conf.d/jormungandr.conf'
 env.jormungandr_uwsgi_config_file = os.path.join(env.jormungandr_base_dir,
                                           'jormungandr.ini')
 
+env.jormungandr_newrelic_config_file = os.path.join(env.jormungandr_base_dir, 'newrelic.ini')
+
 env.jormungandr_url = 'localhost'
 env.jormungandr_url_prefix = ''
 env.jormungandr_port = 80
@@ -306,6 +308,9 @@ env.jormungandr_siri_cache_timeout = 60
 env.jormungandr_bss_provider = None
 
 env.sqlalchemy_pool = None
+
+env.newrelic_key = None
+env.newrelic_app_name = ""
 
 ##############################
 # kraken
