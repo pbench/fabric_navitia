@@ -7,6 +7,7 @@ Description=start kraken_{{instance}}
 After=network.target
 
 [Service]
+LimitNOFILE=49152
 Type=simple
 ExecStart={{kraken_base_conf}}/{{instance}}/kraken
 ExecReload=/bin/kill -HUP $MAINPID
