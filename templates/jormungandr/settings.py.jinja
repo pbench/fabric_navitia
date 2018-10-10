@@ -111,6 +111,15 @@ CACHE_CONFIGURATION = {
     'TIMEOUT_SIRI': {{env.jormungandr_siri_cache_timeout}},
 }
 
+{% if env.jormungandr_use_uwsgi_cache %}
+MEMORY_CACHE_CONFIGURATION = {
+    'CACHE_TYPE': 'uwsgi',
+    'CACHE_UWSGI_NAME': 'jormungandr',
+    'TIMEOUT_AUTHENTICATION': 30,
+    'TIMEOUT_PARAMS': 30,
+}
+{% endif %}
+
 
 AUTOCOMPLETE_SYSTEMS = {
 {% if env.bragi_url %}
