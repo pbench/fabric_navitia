@@ -285,6 +285,8 @@ env.jormungandr_redis_password = None
 env.jormungandr_enable_redis = False
 env.jormungandr_cache_timeout = 600
 
+env.jormungandr_use_uwsgi_cache = False
+
 # stat_persitor and rt (?)
 env.jormungandr_broker_username = 'guest'
 env.jormungandr_broker_password = 'guest'
