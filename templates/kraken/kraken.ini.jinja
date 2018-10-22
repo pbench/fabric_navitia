@@ -15,6 +15,9 @@ raptor_cache_size = {{instance.cache_raptor}}
 is_realtime_enabled = true
 kirin_timeout = {{env.kirin_timeout}}
 {% endif %}
+{% if instance.kraken_prometheus_port %}
+metrics_binding = 0.0.0.0:{{instance.kraken_prometheus_port}}
+{% endif %}
 
 [LOG]
 log4cplus.rootLogger={{env.kraken_log_level}}, ALL_MSGS
