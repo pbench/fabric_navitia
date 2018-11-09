@@ -26,7 +26,7 @@ SQLALCHEMY_POOLCLASS = {{ env.sqlalchemy_pool }}
 
 {% if env.newrelic_key %}
 #enable newrelic
-NEWRELIC_CONFIG_PATH = {{ env.jormungandr_newrelic_config_file }}
+NEWRELIC_CONFIG_PATH = '{{ env.jormungandr_newrelic_config_file }}'
 {% endif %}
 
 # logger configuration
