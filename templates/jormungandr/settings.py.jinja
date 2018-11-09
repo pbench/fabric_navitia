@@ -24,6 +24,11 @@ from sqlalchemy.pool import NullPool
 SQLALCHEMY_POOLCLASS = {{ env.sqlalchemy_pool }}
 {% endif %}
 
+{% if env.newrelic_key %}
+#enable newrelic
+NEWRELIC_CONFIG_PATH = {{ env.jormungandr_newrelic_config_file }}
+{% endif %}
+
 # logger configuration
 from jormungandr.logging_utils import IdFilter
 LOGGER = {
