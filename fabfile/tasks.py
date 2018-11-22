@@ -417,7 +417,7 @@ def update_all_instances(kraken_wait='serial'):
 
 
 @task
-def update_all_configurations():
+def update_all_configurations(restart=True):
     """
     update all configuration and restart all services
     does not deploy any packages
@@ -431,15 +431,16 @@ def update_all_configurations():
         execute(tyr.update_tyr_instance_conf, instance)
         execute(jormungandr.deploy_jormungandr_instance_conf, instance)
         execute(kraken.update_eng_instance_conf, instance)
-    #once all has been updated, we restart all services for the conf to be taken into account
-    execute(tyr.restart_tyr_worker)
-    execute(tyr.restart_tyr_beat)
-    execute(jormungandr.reload_jormun_safe_all)
-    execute(kraken.restart_all_krakens)
+    #once all has been updated, we restart all services (if needed)for the conf to be taken into account
+    if restart:
+        execute(tyr.restart_tyr_worker)
+        execute(tyr.restart_tyr_beat)
+        execute(jormungandr.reload_jormun_safe_all)
+        execute(kraken.restart_all_krakens)
 
-    # and we test the jormungandr
-    for server in env.roledefs['ws']:
-        jormungandr.test_jormungandr(get_host_addr(server))
+        # and we test the jormungandr
+        for server in env.roledefs['ws']:
+            jormungandr.test_jormungandr(get_host_addr(server))
 
 
 @task
