@@ -14,6 +14,9 @@ raptor_cache_size = {{instance.cache_raptor}}
 {% if instance.enable_realtime %}
 is_realtime_enabled = true
 kirin_timeout = {{env.kirin_timeout}}
+    {% if instance.enable_realtime_add %}
+    is_realtime_add_enabled = true
+    {% endif %}
 {% endif %}
 {% if instance.kraken_prometheus_port %}
 metrics_binding = 0.0.0.0:{{instance.kraken_prometheus_port}}
