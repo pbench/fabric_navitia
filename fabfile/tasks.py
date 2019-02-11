@@ -219,14 +219,14 @@ def broadcast_email(kind, status=None):
 
 
 @task
-def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False):
+def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False, uprade_db_tyr=True):
     # TODO only_bina is highly error prone
     """ deploy an upgrade of tyr
     """
     if not time_dict:
         time_dict = TimeCollector()
     execute(tyr.stop_tyr_beat)
-    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False)
+    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False, uprade_db_tyr=True)
     time_dict.register_start('bina')
     instances_failed = execute(tyr.launch_rebinarization_upgrade, pilot_tyr_beat=False).values()[0]
     if check_bina and instances_failed:
@@ -260,14 +260,14 @@ def compare_version_candidate_installed(host_name='eng'):
 
 
 @task
-def upgrade_tyr(up_confs=False, pilot_tyr_beat=True, reload=True):
+def upgrade_tyr(up_confs=False, pilot_tyr_beat=True, reload=True, upgrade_db_tyr=True):
     """Upgrade all ed instances db, launch bina"""
     if pilot_tyr_beat:
         execute(tyr.stop_tyr_beat)
     execute(tyr.upgrade_tyr_packages)
     execute(tyr.setup_tyr_master)
     execute(tyr.upgrade_ed_packages)
-    execute(tyr.upgrade_db_tyr, pilot_tyr_beat=pilot_tyr_beat)
+    execute(tyr.upgrade_db_tyr, pilot_tyr_beat=pilot_tyr_beat, upgrade_db_tyr=upgrade_db_tyr)
     if up_confs:
         tyr.update_tyr_confs()
     execute(tyr.upgrade_cities_db)
