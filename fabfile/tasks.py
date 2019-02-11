@@ -99,7 +99,7 @@ def upgrade_all_packages():
 
 
 @task
-def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
+def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=True, send_mail='no',
                 manual_lb=False, check_dead=True, check_bina=True):
     """Upgrade all navitia packages, databases and launch rebinarisation of all instances """
     up_tyr = get_bool_from_cli(up_tyr)
@@ -136,7 +136,7 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
     time_dict.register_start('total_deploy')
 
     if up_tyr:
-        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina)
+        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=True)
 
     if check_version:
         execute(compare_version_candidate_installed)
