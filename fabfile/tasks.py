@@ -136,7 +136,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     time_dict.register_start('total_deploy')
 
     if up_tyr:
-        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=True)
+        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=upgrade_db_tyr)
 
     if check_version:
         execute(compare_version_candidate_installed)
@@ -219,14 +219,14 @@ def broadcast_email(kind, status=None):
 
 
 @task
-def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False, uprade_db_tyr=True):
+def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False, upgrade_db_tyr=True):
     # TODO only_bina is highly error prone
     """ deploy an upgrade of tyr
     """
     if not time_dict:
         time_dict = TimeCollector()
     execute(tyr.stop_tyr_beat)
-    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False, uprade_db_tyr=True)
+    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False, upgrade_db_tyr=upgrade_db_tyr )
     time_dict.register_start('bina')
     instances_failed = execute(tyr.launch_rebinarization_upgrade, pilot_tyr_beat=False).values()[0]
     if check_bina and instances_failed:
