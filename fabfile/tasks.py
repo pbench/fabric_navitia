@@ -107,6 +107,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     check_version = get_bool_from_cli(check_version)
     check_dead = get_bool_from_cli(check_dead)
     check_bina = get_bool_from_cli(check_bina)
+    upgrade_db_tyr = get_bool_from_cli(upgrade_db_tyr)
 
     # check if all krakens are running with data
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
