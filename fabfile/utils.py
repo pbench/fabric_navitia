@@ -440,7 +440,7 @@ class send_mail(object):
 def get_bool_from_cli(x):
     if isinstance(x, bool):
         return x
-    return x != 'False'
+    return x.lower() != 'false'
 
 
 def start_or_stop_with_delay(service, delay, wait, start=True, only_once=False, exc_raise=False):
