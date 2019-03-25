@@ -41,7 +41,8 @@ class Instance:
                  enable_realtime=False, enable_realtime_add=False, realtime_proxies=[],
                  street_network=None, ridesharing=None,
                  cache_raptor=None, zmq_server=None,
-                 kraken_threads=None, autocomplete=None, kraken_prometheus_port=None):
+                 kraken_threads=None, autocomplete=None, kraken_prometheus_port=None,
+                 equipment_providers=[]):
         self.name = name
         self.db_password = db_password
         self.is_free = is_free
@@ -102,6 +103,7 @@ class Instance:
         self.street_network = street_network
         self.autocomplete = autocomplete
         self.ridesharing = ridesharing
+        self.equipment_details_providers = equipment_providers
 
     @property
     def kraken_engines_url(self):

@@ -352,6 +352,8 @@ def deploy_jormungandr_instance_conf(instance):
         config["ridesharing"] = instance.ridesharing
     if instance.autocomplete:
         config["default_autocomplete"] = instance.autocomplete
+    if instance.equipment_details_providers:
+        config["equipment_details_providers"] = instance.equipment_details_providers
     _upload_template("jormungandr/instance.json.jinja",
                      instance.jormungandr_config_file,
                      context={
