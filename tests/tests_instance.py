@@ -25,7 +25,7 @@ def test_missing_zmq_port():
     env.use_zmq_socket_file = False
     with pytest.raises(SystemExit) as excinfo:
         add_instance('toto', 'passwd')
-    assert excinfo.value.message == "Instance configuration must include a ZMQ port, aborting " \
+    assert excinfo.value.message == "Instance configuration must include a zmq_socket_port, aborting " \
                                    "(see fabfile.env.platforms for some instructions)"
 
 
@@ -131,3 +131,12 @@ def test_multiple_zmq_server():
     assert instance.kraken_engines == ['root@bbb', 'root@ccc']
     assert instance.jormungandr_zmq_socket_for_instance == 'tcp://vip.truc:30001'
     assert instance.kraken_zmq_socket == 'tcp://*:30001'
+
+def test_equipment_details_provider():
+    i1 = add_instance('toto', 'passwd', zmq_socket_port=30001)
+    assert len(i1.equipment_details_providers) == 0
+
+    i2 = add_instance('toto', 'passwd', equipment_providers=['provider_id1', 'provider_id2'], zmq_socket_port=30001)
+    assert len(i2.equipment_details_providers) == 2
+    assert i2.equipment_details_providers[0] == 'provider_id1'
+    assert i2.equipment_details_providers[1] == 'provider_id2'
