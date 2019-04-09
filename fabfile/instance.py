@@ -38,7 +38,8 @@ class Instance:
     def __init__(self, name, db_password, db_local='fr_FR.UTF8',
                  is_free=False, chaos_database=None, rt_topics=[],
                  zmq_socket_port=None, db_name=None, db_user=None, source_dir=None,
-                 enable_realtime=False, enable_realtime_add=False, realtime_proxies=[],
+                 enable_realtime=False, enable_realtime_add=False, enable_realtime_add_trip=False,
+                 realtime_proxies=[],
                  street_network=None, ridesharing=None,
                  cache_raptor=None, zmq_server=None,
                  kraken_threads=None, autocomplete=None, kraken_prometheus_port=None,
@@ -98,6 +99,7 @@ class Instance:
             format(self.name.upper(), (getattr(env, 'fusio_name', None) or env.name).upper())
         self.enable_realtime = enable_realtime
         self.enable_realtime_add = enable_realtime_add
+        self.enable_realtime_add_trip = enable_realtime_add_trip
         self.realtime_proxies = realtime_proxies
         self.cache_raptor = cache_raptor
         self.street_network = street_network
