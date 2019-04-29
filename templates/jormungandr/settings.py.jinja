@@ -66,6 +66,12 @@ LOGGER = {
             "backupCount": "5",
             "filters": ['IdFilter']
         },
+        'stream': {
+            'level': "{{env.jormungandr_log_level}}",
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+            'filters': ['IdFilter']
+        },
         {% if env.use_syslog %}
         'syslog': {
         'level': "{{env.jormungandr_log_level}}",
