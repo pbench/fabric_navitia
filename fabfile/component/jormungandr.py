@@ -373,7 +373,8 @@ def remove_jormungandr_instance(instance):
     instance = get_real_instance(instance)
     run("rm --force {}" .format(instance.jormungandr_config_file))
 
-    reload_jormun_safe_all()
+    # Not uncomment : move to task.py
+    #reload_jormun_safe_all()
 
 
 @task

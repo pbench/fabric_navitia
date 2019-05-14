@@ -486,6 +486,7 @@ def remove_instance(instance, admin=False):
     execute(jormungandr.remove_jormungandr_instance, instance)
     if admin and env.use_load_balancer:
         execute(remove_kraken_vip, instance)
+    execute(jormungandr.reload_jormun_safe_all)
 
 
 @task
