@@ -145,7 +145,9 @@ env.KRAKEN_START_PORT = 30000
 
 env.AT_BASE_LOGDIR = '/var/log/connectors-rt'
 
-env.ADC_HOSTNAME = 'pa4-adc2-prd.canaltp.prod'
+# VIP ADC
+
+env.ADC_HOSTNAME = '10.93.4.1'
 
 """ default environment variables
     /!\ To overwrite these defaults, define it in the corresponding env below
