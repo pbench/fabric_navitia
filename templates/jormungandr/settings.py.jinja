@@ -103,7 +103,7 @@ EXCHANGE_NAME = '{{env.stat_broker_exchange}}'
 # We can't set socket timeout on redis if we use CACHE_REDIS_URL...
 CACHE_CONFIGURATION = {
 {% if env.jormungandr_enable_redis %}
-    'CACHE_TYPE': 'redis',
+    'CACHE_TYPE': '{{env.jormungandr_redis_implementation}}',
     'CACHE_REDIS_HOST': '{{env.redis_host}}',
     'CACHE_REDIS_PORT': '{{env.redis_port}}',
     'CACHE_REDIS_DB': '{{env.jormungandr_redis_db}}',

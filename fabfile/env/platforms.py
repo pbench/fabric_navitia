@@ -281,6 +281,7 @@ env.jormungandr_log_level = 'INFO'
 env.jormungandr_redis_db = 0
 env.jormungandr_redis_user = None
 env.jormungandr_redis_password = None
+env.jormungandr_redis_implementation = 'redis'
 
 env.jormungandr_enable_redis = False
 env.jormungandr_cache_timeout = 600
