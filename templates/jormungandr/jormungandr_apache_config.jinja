@@ -35,6 +35,9 @@ WSGIScriptAlias {{env.jormungandr_url_prefix}} {{env.jormungandr_wsgi_file}}
  AllowOverride All
  Require all granted
 </Directory>
+
+AllowEncodedSlashes On
+
 RewriteEngine on
 RewriteCond %{HTTP:Authorization} ^(.*)
 RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
