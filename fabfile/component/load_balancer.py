@@ -64,6 +64,10 @@ def _adc_connection(check=False):
             username=env.adc_username,
             password=env.adc_password
             ) 
+        if connection.System.Failover.get_failover_state() == 'FAILOVER_STATE_STANDBY':
+            print("Error you are working on passive F5 : %s ." % (env.ADC_HOSTNAME))
+            del(connection)
+            exit(1)
         if check:
             try:
                 connection.System.SystemInfo.get_version()

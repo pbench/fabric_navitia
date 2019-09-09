@@ -38,13 +38,21 @@ class Instance:
     def __init__(self, name, db_password, db_local='fr_FR.UTF8',
                  is_free=False, chaos_database=None, rt_topics=[],
                  zmq_socket_port=None, db_name=None, db_user=None, source_dir=None,
-                 enable_realtime=False, realtime_proxies=[], street_network=None, ridesharing=None,
+                 enable_realtime=False, enable_realtime_add=False, enable_realtime_add_trip=False,
+                 realtime_proxies=[],
+                 street_network=None, ridesharing=None,
                  cache_raptor=None, zmq_server=None,
-                 kraken_threads=None, autocomplete=None):
+                 kraken_threads=None, autocomplete=None, kraken_prometheus_port=None,
+                 equipment_providers=[]):
         self.name = name
         self.db_password = db_password
         self.is_free = is_free
         self.zmq_port = zmq_socket_port
+        if kraken_prometheus_port == 'auto' and self.zmq_port:
+            self.kraken_prometheus_port = self.zmq_port + env.kraken_prometheus_shift
+        else:
+            self.kraken_prometheus_port = kraken_prometheus_port
+
         if env.use_zmq_socket_file:
             self.kraken_zmq_socket = 'ipc://{kraken_dir}/{instance}/kraken.sock'.format(
                 kraken_dir=env.kraken_basedir, instance=self.name)
@@ -90,11 +98,14 @@ class Instance:
         self._source_dir = source_dir if source_dir != 'auto' else '/srv/ed/source/{}/{}/FUSIO/EXPORT/'.\
             format(self.name.upper(), (getattr(env, 'fusio_name', None) or env.name).upper())
         self.enable_realtime = enable_realtime
+        self.enable_realtime_add = enable_realtime_add
+        self.enable_realtime_add_trip = enable_realtime_add_trip
         self.realtime_proxies = realtime_proxies
         self.cache_raptor = cache_raptor
         self.street_network = street_network
         self.autocomplete = autocomplete
         self.ridesharing = ridesharing
+        self.equipment_details_providers = equipment_providers
 
     @property
     def kraken_engines_url(self):

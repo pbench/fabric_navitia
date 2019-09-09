@@ -24,6 +24,11 @@ from sqlalchemy.pool import NullPool
 SQLALCHEMY_POOLCLASS = {{ env.sqlalchemy_pool }}
 {% endif %}
 
+{% if env.newrelic_key %}
+#enable newrelic
+NEWRELIC_CONFIG_PATH = '{{ env.jormungandr_newrelic_config_file }}'
+{% endif %}
+
 # logger configuration
 from jormungandr.logging_utils import IdFilter
 LOGGER = {
@@ -61,6 +66,12 @@ LOGGER = {
             "backupCount": "5",
             "filters": ['IdFilter']
         },
+        'stream': {
+            'level': "{{env.jormungandr_log_level}}",
+            'class': 'logging.StreamHandler',
+            'formatter': 'json',
+            'filters': ['IdFilter']
+        },
         {% if env.use_syslog %}
         'syslog': {
         'level': "{{env.jormungandr_log_level}}",
@@ -92,7 +103,7 @@ EXCHANGE_NAME = '{{env.stat_broker_exchange}}'
 # We can't set socket timeout on redis if we use CACHE_REDIS_URL...
 CACHE_CONFIGURATION = {
 {% if env.jormungandr_enable_redis %}
-    'CACHE_TYPE': 'redis',
+    'CACHE_TYPE': '{{env.jormungandr_redis_implementation}}',
     'CACHE_REDIS_HOST': '{{env.redis_host}}',
     'CACHE_REDIS_PORT': '{{env.redis_port}}',
     'CACHE_REDIS_DB': '{{env.jormungandr_redis_db}}',
@@ -108,7 +119,17 @@ CACHE_CONFIGURATION = {
     'TIMEOUT_AUTHENTICATION': {{env.jormungandr_cache_timeout}},
     'TIMEOUT_PARAMS': {{env.jormungandr_cache_timeout}},
     'TIMEOUT_TIMEO': {{env.jormungandr_timeo_cache_timeout}},
+    'TIMEOUT_SIRI': {{env.jormungandr_siri_cache_timeout}},
 }
+
+{% if env.jormungandr_use_uwsgi_cache %}
+MEMORY_CACHE_CONFIGURATION = {
+    'CACHE_TYPE': 'uwsgi',
+    'CACHE_UWSGI_NAME': 'jormungandr',
+    'TIMEOUT_AUTHENTICATION': 30,
+    'TIMEOUT_PARAMS': 30,
+}
+{% endif %}
 
 
 AUTOCOMPLETE_SYSTEMS = {
@@ -133,3 +154,8 @@ BSS_PROVIDER = {{env.jormungandr_bss_provider}}
 {% if env.jormungandr_car_park_provider %}
 CAR_PARK_PROVIDER = {{env.jormungandr_car_park_provider}}
 {% endif %}
+
+{% if env.jormungandr_equipment_details_providers %}
+EQUIPMENT_DETAILS_PROVIDERS = {{env.jormungandr_equipment_details_providers}}
+{% endif %}
+

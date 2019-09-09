@@ -183,9 +183,10 @@ def upgrade_tyr_packages():
 @task
 @roles('tyr_master')
 @run_once_per_host
-def upgrade_db_tyr(pilot_tyr_beat=True):
-    with cd(env.tyr_basedir), shell_env(TYR_CONFIG_FILE=env.tyr_settings_file), settings(user=env.KRAKEN_USER):
-        run('python manage.py db upgrade')
+def upgrade_db_tyr(pilot_tyr_beat=True,upgrade_db_tyr=True):
+    if upgrade_db_tyr:
+       with cd(env.tyr_basedir), shell_env(TYR_CONFIG_FILE=env.tyr_settings_file), settings(user=env.KRAKEN_USER):
+         run('python manage.py db upgrade')
     if pilot_tyr_beat:
         require.service.start('tyr_beat')
     require.service.start('tyr_worker')

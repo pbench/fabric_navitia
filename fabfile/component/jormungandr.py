@@ -68,6 +68,9 @@ def update_jormungandr_conf():
                      })
     _upload_template('jormungandr/settings.py.jinja', env.jormungandr_settings_file,
                      context={'env': env})
+    if env.newrelic_key: # Only upload newrelic config if a license key is provided
+        _upload_template('jormungandr/newrelic.ini.jinja', env.jormungandr_newrelic_config_file,
+                         context={'env': env})
 
     if env.uwsgi_enable:
         # Add uwsgi config for jormungandr
@@ -120,6 +123,8 @@ def upgrade_ws_packages():
 
     # We want the version of the system for these packages
     run('''sed -e "/protobuf/d" -e "/psycopg2/d"  /usr/share/jormungandr/requirements.txt > /tmp/jormungandr_requirements.txt''')
+    #add newrelic as a dependency
+    run('''echo 'newrelic==2.70.0.51' >> /tmp/jormungandr_requirements.txt''')
     run('git config --global url."https://".insteadOf git://')
     require.python.install_requirements('/tmp/jormungandr_requirements.txt', use_sudo=True, exists_action='w')
 
@@ -349,6 +354,8 @@ def deploy_jormungandr_instance_conf(instance):
         config["ridesharing"] = instance.ridesharing
     if instance.autocomplete:
         config["default_autocomplete"] = instance.autocomplete
+    if instance.equipment_details_providers:
+        config["equipment_details_providers"] = instance.equipment_details_providers
     _upload_template("jormungandr/instance.json.jinja",
                      instance.jormungandr_config_file,
                      context={
@@ -367,8 +374,6 @@ def remove_jormungandr_instance(instance):
     """
     instance = get_real_instance(instance)
     run("rm --force {}" .format(instance.jormungandr_config_file))
-
-    reload_jormun_safe_all()
 
 
 @task

@@ -99,14 +99,16 @@ def upgrade_all_packages():
 
 
 @task
-def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
-                manual_lb=False, check_dead=True, check_bina=True):
+def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=True, send_mail='no',
+                manual_lb=False, check_dead=True, check_bina=True, skip_bina=False):
     """Upgrade all navitia packages, databases and launch rebinarisation of all instances """
     up_tyr = get_bool_from_cli(up_tyr)
     up_confs = get_bool_from_cli(up_confs)
     check_version = get_bool_from_cli(check_version)
     check_dead = get_bool_from_cli(check_dead)
     check_bina = get_bool_from_cli(check_bina)
+    upgrade_db_tyr = get_bool_from_cli(upgrade_db_tyr)
+    skip_bina = get_bool_from_cli(skip_bina)
 
     # check if all krakens are running with data
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
@@ -136,11 +138,13 @@ def upgrade_all(up_tyr=True, up_confs=True, check_version=True, send_mail='no',
     time_dict.register_start('total_deploy')
 
     if up_tyr:
-        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina)
+        execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=upgrade_db_tyr, skip_bina=skip_bina)
 
     if check_version:
         execute(compare_version_candidate_installed)
-    execute(kraken.swap_all_data_nav)
+
+    if not skip_bina:
+        execute(kraken.swap_all_data_nav)
 
     # Upgrade kraken/jormun on first hosts set
     if env.eng_hosts_1 and env.ws_hosts_1:
@@ -219,14 +223,18 @@ def broadcast_email(kind, status=None):
 
 
 @task
-def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False):
+
+def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False, upgrade_db_tyr=True, skip_bina=False):
+    # TODO only_bina is highly error prone
     """ deploy an upgrade of tyr
     """
     if not time_dict:
         time_dict = TimeCollector()
     execute(tyr.stop_tyr_beat)
-    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False)
+    execute(upgrade_tyr, up_confs=up_confs, pilot_tyr_beat=False, upgrade_db_tyr=upgrade_db_tyr )
     time_dict.register_start('bina')
+    if skip_bina:
+        return time_dict
     instances_failed = execute(tyr.launch_rebinarization_upgrade, pilot_tyr_beat=False).values()[0]
     if check_bina and instances_failed:
         if float(len(instances_failed)) / len(env.instances) <= env.acceptable_bina_fail_rate:
@@ -259,14 +267,14 @@ def compare_version_candidate_installed(host_name='eng'):
 
 
 @task
-def upgrade_tyr(up_confs=False, pilot_tyr_beat=True, reload=True):
+def upgrade_tyr(up_confs=False, pilot_tyr_beat=True, reload=True, upgrade_db_tyr=True):
     """Upgrade all ed instances db, launch bina"""
     if pilot_tyr_beat:
         execute(tyr.stop_tyr_beat)
     execute(tyr.upgrade_tyr_packages)
     execute(tyr.setup_tyr_master)
     execute(tyr.upgrade_ed_packages)
-    execute(tyr.upgrade_db_tyr, pilot_tyr_beat=pilot_tyr_beat)
+    execute(tyr.upgrade_db_tyr, pilot_tyr_beat=pilot_tyr_beat, upgrade_db_tyr=upgrade_db_tyr)
     if up_confs:
         tyr.update_tyr_confs()
     execute(tyr.upgrade_cities_db)
@@ -416,7 +424,7 @@ def update_all_instances(kraken_wait='serial'):
 
 
 @task
-def update_all_configurations():
+def update_all_configurations(restart=True):
     """
     update all configuration and restart all services
     does not deploy any packages
@@ -429,15 +437,16 @@ def update_all_configurations():
         execute(tyr.update_tyr_instance_conf, instance)
         execute(jormungandr.deploy_jormungandr_instance_conf, instance)
         execute(kraken.update_eng_instance_conf, instance)
-    #once all has been updated, we restart all services for the conf to be taken into account
-    execute(tyr.restart_tyr_worker)
-    execute(tyr.restart_tyr_beat)
-    execute(jormungandr.reload_jormun_safe_all)
-    execute(kraken.restart_all_krakens)
+    #once all has been updated, we restart all services (if needed)for the conf to be taken into account
+    if restart:
+        execute(tyr.restart_tyr_worker)
+        execute(tyr.restart_tyr_beat)
+        execute(jormungandr.reload_jormun_safe_all)
+        execute(kraken.restart_all_krakens)
 
-    # and we test the jormungandr
-    for server in env.roledefs['ws']:
-        jormungandr.test_jormungandr(get_host_addr(server))
+        # and we test the jormungandr
+        for server in env.roledefs['ws']:
+            jormungandr.test_jormungandr(get_host_addr(server))
 
 
 @task
@@ -477,6 +486,7 @@ def remove_instance(instance, admin=False):
     execute(jormungandr.remove_jormungandr_instance, instance)
     if admin and env.use_load_balancer:
         execute(remove_kraken_vip, instance)
+    execute(jormungandr.reload_jormun_safe_all)
 
 
 @task

@@ -1,5 +1,6 @@
 key,value
 cc,centre commercial
+c.cial,centre commercial
 hotel de ville,mairie
 gare sncf,gare
 chu,hopital

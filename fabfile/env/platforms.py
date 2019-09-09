@@ -145,7 +145,7 @@ env.KRAKEN_START_PORT = 30000
 
 env.AT_BASE_LOGDIR = '/var/log/connectors-rt'
 
-env.ADC_HOSTNAME = 'pa4-adc1-prd.canaltp.prod'
+env.ADC_HOSTNAME = 'pa4-adc2-prd.canaltp.prod'
 
 """ default environment variables
     /!\ To overwrite these defaults, define it in the corresponding env below
@@ -214,6 +214,9 @@ env.redis_socket_timeout = 0.1
 env.ed_basedir = '/srv/ed'
 env.ed_datadir = '/srv/data'
 
+# shift applied to the zmq port of a kraken to compute the prometheus port
+env.kraken_prometheus_shift = 10000
+
 # defines additional jormungandr settings (KEY = value)
 env.jormungandr_additional_settings = {}
 
@@ -260,6 +263,8 @@ env.jormungandr_apache_config_file = '/etc/apache2/conf.d/jormungandr.conf'
 env.jormungandr_uwsgi_config_file = os.path.join(env.jormungandr_base_dir,
                                           'jormungandr.ini')
 
+env.jormungandr_newrelic_config_file = os.path.join(env.jormungandr_base_dir, 'newrelic.ini')
+
 env.jormungandr_url = 'localhost'
 env.jormungandr_url_prefix = ''
 env.jormungandr_port = 80
@@ -276,9 +281,12 @@ env.jormungandr_log_level = 'INFO'
 env.jormungandr_redis_db = 0
 env.jormungandr_redis_user = None
 env.jormungandr_redis_password = None
+env.jormungandr_redis_implementation = 'redis'
 
 env.jormungandr_enable_redis = False
 env.jormungandr_cache_timeout = 600
+
+env.jormungandr_use_uwsgi_cache = False
 
 # stat_persitor and rt (?)
 env.jormungandr_broker_username = 'guest'
@@ -302,9 +310,13 @@ env.jormungandr_log_extras = ''
 env.jormungandr_pool_size = None
 
 env.jormungandr_timeo_cache_timeout = 60
+env.jormungandr_siri_cache_timeout = 60
 env.jormungandr_bss_provider = None
 
 env.sqlalchemy_pool = None
+
+env.newrelic_key = None
+env.newrelic_app_name = ""
 
 ##############################
 # kraken
