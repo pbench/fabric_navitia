@@ -447,6 +447,7 @@ env.use_cities = True
 env.cities_db_name = 'cities'
 env.cities_db_password = 'password'
 env.cities_db_user = 'navitia'
+env.cities_path = '/srv/ed/backup/' # path where the cities file is archived
 
 #use protobuff cpp implementation (needs up to date probobuf version (at least 2.6))
 env.use_protobuf_cpp = False

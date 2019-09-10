@@ -25,6 +25,7 @@ CITIES_DATABASE_URI = 'postgresql://{{env.cities_db_user}}:{{env.cities_db_passw
 {% else %}
 CITIES_DATABASE_URI = None
 {% endif %}
+CITIES_OSM_FILE_PATH = '{{env.cities_path}}'
 
 # logger configuration
 LOGGER = {
