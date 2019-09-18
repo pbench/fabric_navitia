@@ -114,7 +114,7 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
 
     # check one instance on each WS
-    #TODO: Check all instance not only random one.
+    #TODO: Check all instance not only random one. #pylint: disable=fixme
     for server in env.roledefs['ws']:
         instance = random.choice(env.instances.values())
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
@@ -223,6 +223,7 @@ def broadcast_email(kind, status=None):
 
 
 @task
+
 def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=False, upgrade_db_tyr=True, skip_bina=False):
     # TODO only_bina is highly error prone
     """ deploy an upgrade of tyr
@@ -248,7 +249,7 @@ def update_tyr_step(time_dict=None, only_bina=True, up_confs=True, check_bina=Fa
     time_dict.register_end('bina')
     if only_bina:
         print show_time_deploy(time_dict)
-        return
+        return None
     if check_bina and instances_failed:
         abort(red("\n  ERROR: {} binarisation(s) have failed.".format(len(instances_failed))))
     return time_dict
@@ -428,7 +429,6 @@ def update_all_configurations(restart=True):
     update all configuration and restart all services
     does not deploy any packages
     """
-    # TODO refactor this to follow a good orchestration for production
     execute(kraken.get_no_data_instances)
     execute(jormungandr.update_jormungandr_conf)
     execute(kraken.update_monitor_configuration)

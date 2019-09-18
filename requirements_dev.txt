@@ -1,0 +1,2 @@
+pylint==1.9.3
+pre-commit==1.10.5

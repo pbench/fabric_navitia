@@ -390,7 +390,7 @@ class send_mail(object):
     start_mail_message = u"The deployment of the new version of Navitia 2 is starting on plateform %s" \
                          u"\nYou may be impacted."
     finished_mail_subject = u"End of deployment of Navitia 2 v{version} on plateform {target}"
-    finished_mail_message = u"New version of Navitia 2 deployed on %s.\n\o/ thank you for your patience !"
+    finished_mail_message = u"New version of Navitia 2 deployed on %s.\n\\o/ thank you for your patience !"
     email_author = (u'Navitia-noreply', u'Navitia Deployment')
 
     def __init__(self):
@@ -444,8 +444,6 @@ def get_bool_from_cli(x):
 
 
 def start_or_stop_with_delay(service, delay, wait, start=True, only_once=False, exc_raise=False):
-    # TODO refactor to overcome the SSH problem with respect to "service start"
-    # see: https://github.com/fabric/fabric/issues/395
     cmd = require.service.started if start else require.service.stopped
     retry_cond = (lambda x: not require.service.is_running(service)) if start \
                  else (lambda x: require.service.is_running(service))
@@ -554,7 +552,7 @@ class NagiosSupervisionHandler(SupervisionHandler):
         move_host = re.compile(r'@(.*?)\.')
         return move_host.search(host).group(1)
 
-    def stop_supervision(self, host, service, duration):
+    def stop_supervision(self, host, service, duration=None):
         if not duration:
             raise ValueError("'duration' attribute must be defined and positive.")
 
@@ -584,17 +582,18 @@ class NagiosSupervisionHandler(SupervisionHandler):
 
 @task
 def login_nagios(self):
-        run("curl --cookie-jar /tmp/thruk.cookie -H 'Cookie: thruk_theme=Thruk; thruk_backends={}={}={}={}; "
+    run("curl --cookie-jar /tmp/thruk.cookie -H 'Cookie: thruk_theme=Thruk; thruk_backends={}={}={}={}; "
         "thruk_conf=; thruk_auth=; thruk_message=; thruk_test=%2A%2A%2A%2A; _ga={}' '{}' "
         "--data 'referer=&login={}&password={}&submit=login'"
         .format(self.thruk_backends[0], self.thruk_backends[1], self.thruk_backends[2], self.thruk_backends[3],
                 self.ga, self.url + 'cgi-bin/login.cgi', self.user, self.pwd))
-        with hide('output'), settings(warn_only=True):
-            parse_response = run("curl --cookie /tmp/thruk.cookie '{}'".format(self.url))
-        for line in parse_response.split('\n'):
-            if line.startswith('var user_token'):
-                token = line.split('=')[1].strip()
-                return token[1:-2]
+    with hide('output'), settings(warn_only=True):
+        parse_response = run("curl --cookie /tmp/thruk.cookie '{}'".format(self.url))
+    for line in parse_response.split('\n'):
+        if line.startswith('var user_token'):
+            token = line.split('=')[1].strip()
+            return token[1:-2]
+    return None
 
 
 @task
@@ -630,7 +629,7 @@ class ThrukSupervisionHandler(SupervisionHandler):
         """
         return login_nagios(self)
 
-    def stop_supervision(self, host, service, duration):
+    def stop_supervision(self, host, service, duration=None):
         if not duration:
             raise ValueError("'duration' attribute must be defined and positive.")
 
