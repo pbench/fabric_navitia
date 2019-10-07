@@ -380,12 +380,7 @@ def update_init(host):
 @task
 def update_init_kraken(host):
     with settings(host_string=host):
-        with settings(warn_only=True):
-            result = run('which systemd')
-        if result == '':
-            print('systemd is not installed')
-        else:
-            run('systemctl daemon-reload')
+        run('systemctl daemon-reload')
 
 class send_mail(object):
     """
