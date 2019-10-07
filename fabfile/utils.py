@@ -369,7 +369,7 @@ def show_version(action='show', host='eng'):
 
 @task
 def update_init(host):
-    with settings(host_string=env.roledefs[host][0])):
+    with settings(host_string=env.roledefs[host][0]):
         with settings(warn_only=True):
             result = run('which systemd')
         if result == '':
