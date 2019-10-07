@@ -47,7 +47,7 @@ from fabtools import require, service, files, python
 # WARNING: the way fabric_navitia imports are done as a strong influence
 #          on the resulting naming of tasks, wich can break integration tests
 from fabfile.utils import (get_bool_from_cli, _install_packages, get_real_instance,
-                           update_init, get_host_addr,
+                           update_init, update_init_kraken, get_host_addr,
                            _upload_template, start_or_stop_with_delay, idempotent_symlink)
 
 
@@ -462,7 +462,7 @@ def update_eng_instance_conf(instance, host=None):
                                  },
                                  mode='755'
                 )
-            update_init(host='eng')
+            update_init_kraken(host=h)
 
 
 @task

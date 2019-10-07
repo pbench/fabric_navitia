@@ -377,6 +377,10 @@ def update_init(host):
         else:
             run('systemctl daemon-reload')
 
+@task
+def update_init_kraken(host):
+    with settings(host_string=host):
+        run('systemctl daemon-reload')
 
 class send_mail(object):
     """
