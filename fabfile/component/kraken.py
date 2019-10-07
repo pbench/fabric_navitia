@@ -462,7 +462,7 @@ def update_eng_instance_conf(instance, host=None):
                                  },
                                  mode='755'
                 )
-            update_init(host='eng')
+            update_init(host='h')
 
 
 @task
