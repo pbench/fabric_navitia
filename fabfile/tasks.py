@@ -429,6 +429,8 @@ def update_all_configurations(restart=True):
     update all configuration and restart all services
     does not deploy any packages
     """
+    restart = get_bool_from_cli(restart)
+    
     execute(kraken.get_no_data_instances)
     execute(jormungandr.update_jormungandr_conf)
     execute(kraken.update_monitor_configuration)
