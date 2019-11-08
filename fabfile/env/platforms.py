@@ -208,6 +208,7 @@ env.eng_hosts_2 = []
 # redis host used by tyr and jormungandr
 env.redis_host = 'localhost'
 env.redis_port = 6379
+# timeout in seconds# timeout in seconds
 env.redis_socket_timeout = 0.1
 
 # ed/tyr base dir
@@ -269,8 +270,8 @@ env.jormungandr_url = 'localhost'
 env.jormungandr_url_prefix = ''
 env.jormungandr_port = 80
 env.jormungandr_listen_port = env.jormungandr_port
-env.jormungandr_save_stats = True
-env.jormungandr_is_public = False
+env.jormungandr_save_stats = True # Enable stats to be sent to rabbitmq
+env.jormungandr_is_public = False # If set to true authentication is disabled
 
 env.jormungandr_log_dir = '/var/log/jormungandr/'
 env.jormungandr_log_file = os.path.join(env.jormungandr_log_dir, 'jormungandr.log')
@@ -281,6 +282,7 @@ env.jormungandr_log_level = 'INFO'
 env.jormungandr_redis_db = 0
 env.jormungandr_redis_user = None
 env.jormungandr_redis_password = None
+# class used for caching, can be set to 'jormungandr.customredis.redis' to enable a circuit breaker
 env.jormungandr_redis_implementation = 'redis'
 
 env.jormungandr_enable_redis = False
@@ -405,6 +407,7 @@ env.postgres_read_only_password = 'read_only'
 env.postgres_schemas = ['georef', 'public', 'navitia']
 
 # kirin
+# timeout duration when kraken load realtime from kirin at startup
 env.kirin_timeout = 60000
 
 # redis
@@ -450,7 +453,7 @@ env.cities_db_user = 'navitia'
 env.cities_path = '/srv/ed/backup/' # path where the cities file is archived
 
 #use protobuff cpp implementation (needs up to date probobuf version (at least 2.6))
-env.use_protobuf_cpp = False
+env.use_protobuf_cpp = True
 
 env.is_prod = False
 
@@ -458,7 +461,7 @@ env.is_prod = False
 # see backup_datanav()tasks.tyr.backup_datanav
 env.excluded_instances = []
 
-# url of the autocomplete service
+# url of the autocomplete service (ES)
 env.mimir_url = None
 #url of bragi, the autocomplete service over mimir
 env.bragi_url = None
