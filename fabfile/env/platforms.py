@@ -407,7 +407,7 @@ env.postgres_read_only_password = 'read_only'
 env.postgres_schemas = ['georef', 'public', 'navitia']
 
 # kirin
-# timeout duration when kraken load realtime from kirin at startup
+# timeout duration when kraken load realtime from kirin at startup (ms)
 env.kirin_timeout = 60000
 
 # redis
