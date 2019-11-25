@@ -18,6 +18,9 @@ SQLALCHEMY_DATABASE_URI='postgresql://{{env.tyr_postgresql_user}}:{{env.tyr_post
 #désactivation de l'authentification
 PUBLIC={{env.jormungandr_is_public}}
 
+# Define ZMQ default socket type
+ZMQ_DEFAULT_SOCKET_TYPE='{{ env.jormungandr_zmq_default_socket_type }}'
+
 {% if env.sqlalchemy_pool %}
 #Desactivation pool sql on jorgmungandr
 from sqlalchemy.pool import NullPool
