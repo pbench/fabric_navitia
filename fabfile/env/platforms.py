@@ -196,10 +196,10 @@ env.rabbitmq_port_api = 15672
 
 
 env.rabbitmq_stats_host = 'localhost'
-env.rabbitmq_stats_port = '5672'
-env.rabbitmq_stats_user = 'stat_write'
-env.rabbitmq_stats_pass = 'pass'
-env.rabbitmq_stats_vhost = 'nav2logs'
+env.rabbitmq_stats_port = 5672
+env.rabbitmq_stats_user = 'user'
+env.rabbitmq_stats_pass = 'pwd'
+env.rabbitmq_stats_vhost = '/'
 
 
 env.stat_broker_exchange = 'stat_persistor_exchange'
