@@ -450,6 +450,24 @@ def update_all_configurations(restart=True):
         for server in env.roledefs['ws']:
             jormungandr.test_jormungandr(get_host_addr(server))
 
+@task
+def update_jormungandr_configurations(restart=True):
+    """
+    update all configuration and restart all services
+    does not deploy any packages
+    """
+    restart = get_bool_from_cli(restart)
+    
+    execute(jormungandr.update_jormungandr_conf)
+    for instance in env.instances.values():
+        execute(jormungandr.deploy_jormungandr_instance_conf, instance)
+    #once all has been updated, we restart all services (if needed)for the conf to be taken into account
+    if restart:
+        execute(jormungandr.reload_jormun_safe_all)
+        
+        # and we test the jormungandr
+        for server in env.roledefs['ws']:
+            jormungandr.test_jormungandr(get_host_addr(server))
 
 @task
 def update_instance(instance, reload_jormun=True):
