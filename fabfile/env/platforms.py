@@ -215,8 +215,8 @@ env.rabbitmq_tyr_exchange = 'navitia'
 
 env.rabbitmq_stats_host = 'localhost'
 env.rabbitmq_stats_port = 5672
-env.rabbitmq_stats_user = 'user'
-env.rabbitmq_stats_pass = 'pwd'
+env.rabbitmq_stats_user = 'guest'
+env.rabbitmq_stats_pass = 'guest'
 env.rabbitmq_stats_vhost = '/'
 env.rabbitmq_stats_exchange = 'stat_persistor_exchange'
 
