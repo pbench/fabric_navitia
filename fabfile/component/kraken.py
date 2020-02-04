@@ -572,7 +572,8 @@ def delete_kraken_queue_to_rabbitmq(instance, apply_on='reverse'):
 	rabbitmq_vhost = '%2F'
     else:
         rabbitmq_vhost = env.rabbitmq_kraken_host
-   :
+    
+    
     host_string = env.rabbitmq_kraken_host
 
     for host in set(hosts) - set(exclude_hosts):
