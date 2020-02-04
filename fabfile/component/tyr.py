@@ -62,10 +62,6 @@ def update_tyr_config_file():
     _upload_template("tyr/settings.py.jinja", env.tyr_settings_file,
                      context={
                         'env': env,
-                        'tyr_broker_username': env.tyr_broker_username,
-                        'tyr_broker_password': env.tyr_broker_password,
-                        'rabbitmq_host': env.rabbitmq_host,
-                        'rabbitmq_port': env.rabbitmq_port,
                         'tyr_postgresql_user': env.tyr_postgresql_user,
                         'tyr_postgresql_password': env.tyr_postgresql_password,
                         'ed_postgresql_database_host': env.ed_postgresql_database_host,

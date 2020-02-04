@@ -99,7 +99,7 @@ LOGGER = {
 
 SAVE_STAT = {{env.jormungandr_save_stats}}
 BROKER_URL = 'amqp://{{ env.rabbitmq_stats_user }}:{{ env.rabbitmq_stats_pass }}@{{ env.rabbitmq_stats_host }}:{{ env.rabbitmq_stats_port }}/{{ env.rabbitmq_stats_vhost }}'
-EXCHANGE_NAME = '{{env.stat_broker_exchange}}'
+EXCHANGE_NAME = '{{env.rabbitmq_stats_exchange}}'
 
 {% for key, value in env.jormungandr_additional_settings.iteritems() %}
 {{key}} = {{value}}

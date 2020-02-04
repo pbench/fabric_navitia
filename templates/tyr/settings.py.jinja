@@ -10,7 +10,7 @@ import logging
 #amqp://<user>:<password>@<host>:<port>/<vhost>
 #the default vhost is "/" so the URL end with *two* slash
 #http://docs.celeryproject.org/en/latest/configuration.html#std:setting-BROKER_URL
-CELERY_BROKER_URL = 'amqp://{{tyr_broker_username}}:{{tyr_broker_password}}@{{rabbitmq_host}}:{{rabbitmq_port}}//'
+CELERY_BROKER_URL = 'amqp://{{env.rabbitmq_tyr_user}}:{{env.rabbitmq_tyr_pass}}@{{env.rabbitmq_tyr_host}}:{{env.rabbitmq_tyr_port}}/{env.rabbitmq_tyr_vhost}}'
 
 #URI for postgresql
 # postgresql://<user>:<password>@<host>:<port>/<dbname>

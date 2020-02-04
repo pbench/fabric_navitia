@@ -20,7 +20,7 @@ def test_update_tyr_config_file(distributed_undeployed):
     assert platform.path_exists('/srv/tyr/settings.wsgi')
 
     env = fabric.get_object('env')
-    env.tyr_broker_username = 'toto'
+    env.rabbitmq_tyr_user = 'toto'
     value, exception, stdout, stderr = fabric.execute_forked('update_tyr_config_file')
     assert exception is None
     assert stderr.count("Warning: run() received nonzero return code 1 while executing "
