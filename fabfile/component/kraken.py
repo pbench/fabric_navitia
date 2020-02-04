@@ -569,7 +569,7 @@ def delete_kraken_queue_to_rabbitmq(instance, apply_on='reverse'):
         abort("Bad 'apply_on' parameter value: {}".format(apply_on))
 
     if env.rabbitmq_kraken_vhost == '/':
-	rabbitmq_vhost = '%2F'
+        rabbitmq_vhost = '%2F'
     else:
         rabbitmq_vhost = env.rabbitmq_kraken_host
     
