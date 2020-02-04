@@ -218,7 +218,7 @@ env.rabbitmq_stats_port = 5672
 env.rabbitmq_stats_user = 'guest'
 env.rabbitmq_stats_pass = 'guest'
 env.rabbitmq_stats_vhost = '/'
-env.rabbitmq_stats_exchange = 'stat_persistor_exchange'
+env.rabbitmq_stats_exchange = 'stat_persistor_exchange_topic'
 
 env.ws_hosts_1 = []
 env.eng_hosts_1 = []
