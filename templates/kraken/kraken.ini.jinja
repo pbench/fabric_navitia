@@ -44,12 +44,12 @@ log4cplus.appender.ALL_MSGS.layout.ConversionPattern={% raw %}[%D{%y-%m-%d %H:%M
 log4cplus.appender.ALL_MSGS.layout=log4cplus::PatternLayout
 
 [BROKER]
-host = {{env.rabbitmq_host_api}}
-port = {{env.rabbitmq_port}}
-username = {{env.kraken_broker_username}}
-password = {{env.kraken_broker_password}}
-vhost = {{env.kraken_broker_vhost}}
-exchange = {{env.kraken_broker_exchange}}
+host = {{env.rabbitmq_kraken_host}}
+port = {{env.rabbitmq_kraken_port}}
+username = {{env.rabbitmq_kraken_user}}
+password = {{env.rabbitmq_kraken_pass}}
+vhost = {{env.rabbitmq_kraken_vhost}}
+exchange = {{env.rabbitmq_kraken_exchange}}
 {% for topic in instance.rt_topics %}
 rt_topics = {{topic}}
 {% endfor %}

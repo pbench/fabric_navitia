@@ -184,25 +184,41 @@ env.set_postgresql_database_host = set_postgresql_database_host
 # restart kraken
 env.restart_service_always = False
 
-# brokker == brokk == rabbitmq
-# used by tyr, kraken, ...
-# only overwritten on exploit and prod
-env.rabbitmq_user = 'user'
-env.rabbitmq_pass = 'pwd'
-env.rabbitmq_host = 'localhost'
-env.rabbitmq_port = 5672
-env.rabbitmq_host_api = 'localhost'
+# Rabbitmq connections parameters
+#
+
+# DEFAULT
 env.rabbitmq_port_api = 15672
 
+# KRAKEN
+# used in the templates/kraken/kraken.ini.jinja
+
+env.rabbitmq_kraken_host = 'localhost'
+env.rabbitmq_kraken_port = 5672
+env.rabbitmq_kraken_user = 'guest'
+env.rabbitmq_kraken_pass = 'guest'
+env.rabbitmq_kraken_vhost = '/'
+env.rabbitmq_kraken_exchange = 'navitia'
+
+# TYR
+# used in the templates/tyr/instance.ini.jinja
+
+env.rabbitmq_tyr_host = 'localhost'
+env.rabbitmq_tyr_user = 'guest'
+env.rabbitmq_tyr_pass = 'guest'
+env.rabbitmq_tyr_vhost = '/'
+env.rabbitmq_tyr_exchange = 'navitia'
+
+
+# STATS 
+# used in the templates/jormungandr/settings.py.jinja
 
 env.rabbitmq_stats_host = 'localhost'
 env.rabbitmq_stats_port = 5672
-env.rabbitmq_stats_user = 'user'
-env.rabbitmq_stats_pass = 'pwd'
+env.rabbitmq_stats_user = 'guest'
+env.rabbitmq_stats_pass = 'guest'
 env.rabbitmq_stats_vhost = '/'
-
-
-env.stat_broker_exchange = 'stat_persistor_exchange'
+env.rabbitmq_stats_exchange = 'stat_persistor_exchange_topic'
 
 env.ws_hosts_1 = []
 env.eng_hosts_1 = []
@@ -336,16 +352,6 @@ env.kraken_basedir = '/srv/kraken'
 # log dir for all kraken instances, no need to change this
 env.kraken_log_basedir = '/var/log/kraken'
 
-# kraken rabbitmq connections parameters
-# used in the kraken/kraken.ini.jinja template
-#
-
-env.kraken_broker_port = 5672
-env.kraken_broker_username = 'guest'
-env.kraken_broker_password = 'guest'
-env.kraken_broker_vhost = '/'
-env.kraken_broker_exchange = 'navitia'
-
 # name of kraken database, no need to change this
 env.kraken_data_nav = 'data.nav.lz4'
 
@@ -375,10 +381,6 @@ env.feed_publisher = False
 # tyr
 ##############################
 
-# rabbitmq username/password
-env.tyr_broker_username = 'guest'
-env.tyr_broker_password = 'guest'
-env.tyr_broker_exchange = 'navitia'
 
 env.tyr_base_instances_dir = '/etc/tyr.d'
 env.tyr_basedir = '/srv/tyr'
