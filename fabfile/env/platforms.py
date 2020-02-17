@@ -204,6 +204,7 @@ env.rabbitmq_kraken_exchange = 'navitia'
 # used in the templates/tyr/instance.ini.jinja
 
 env.rabbitmq_tyr_host = 'localhost'
+env.rabbitmq_tyr_port = 5672
 env.rabbitmq_tyr_user = 'guest'
 env.rabbitmq_tyr_pass = 'guest'
 env.rabbitmq_tyr_vhost = '/'
