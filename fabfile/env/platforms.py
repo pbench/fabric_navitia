@@ -207,7 +207,6 @@ env.rabbitmq_tyr_host = 'localhost'
 env.rabbitmq_tyr_user = 'guest'
 env.rabbitmq_tyr_pass = 'guest'
 env.rabbitmq_tyr_vhost = '/'
-env.rabbitmq_tyr_exchange = 'navitia'
 
 
 # STATS 
