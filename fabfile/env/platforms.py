@@ -208,7 +208,6 @@ env.rabbitmq_tyr_port = 5672
 env.rabbitmq_tyr_user = 'guest'
 env.rabbitmq_tyr_pass = 'guest'
 env.rabbitmq_tyr_vhost = '/'
-env.rabbitmq_tyr_exchange = 'navitia'
 
 
 # STATS 
