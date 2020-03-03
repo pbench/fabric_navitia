@@ -2,12 +2,12 @@
 
 ## retreive_debian_packages_from_github 
 
-**Github Actions** is capable to create **artifacts** from a specific job.<br>
+**Github Actions** is capable of creating **artifacts** from a specific job.<br>
 Artifacts can be downloaded via the github API.<br>
-We want to reteive the **last Navitia Debian packages** (in *success*) compressed in a zip file.<br>
+We want to retrieve the **last Navitia Debian packages** (in *success*) compressed in a zip file.<br>
 To perform it, the script does:
-- Find the concerned workflow (id)
-- Retreive the last run (in success) of the workflow
+- Find the related workflow (id)
+- Retrieve the last run (in success) of the workflow
 - Dowmload the associated artifacts (in a zip file)
 
 script type : python 2

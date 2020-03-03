@@ -59,10 +59,9 @@ class GithubArtifactsReceiver:
         self.old_artifacts_to_remove = self.artifacts_output_path + "/" + self.artifacts_name
         self.url_header = "https://" + github_user +  ":" + github_token + "@"
         self.workflows_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows"
-        self.runs_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows/"
         self.logger = logging.getLogger('github artifacts receiver')
         self._config_logger()
-        self.logger.info("load artifacts receiver with github_user={}, github_token={}, workflow_name={}, artifacts_name={}, output_path={}".format(self.github_user, self.github_token, self.workflow_name, self.artifacts_name, self.artifacts_output_path))
+        self.logger.info("load artifacts receiver with github_user={}, github_token=TOKEN, workflow_name={}, artifacts_name={}, output_path={}".format(self.github_user, self.workflow_name, self.artifacts_name, self.artifacts_output_path))
 
 
     def retreive_workflow_id(self):
@@ -78,13 +77,16 @@ class GithubArtifactsReceiver:
 
     def retreive_artifacts_link_from_last_run(self, workflow_id):
         """ Retreive artifacts link from the last run """
-        resp = self.call(self.runs_url + str(workflow_id) + "/runs")
+        resp = self.call(self.workflows_url + "/" + str(workflow_id) + "/runs")
         total_count = resp["total_count"]
         for workflow_run in resp["workflow_runs"]:
             if workflow_run["run_number"] == total_count:
                 if workflow_run["conclusion"] != "success":
                     self.logger.error("the last job, id {}, is not success".format(workflow_run["id"]))
                     sys.exit("the last job is not success")
+                if workflow_run["status"] != "completed":
+                    self.logger.error("the last job, id {}, is not completed".format(workflow_run["id"]))
+                    sys.exit("the last job is not completed")
                 self.logger.info("run id={} in success with artifacts url {}".format(workflow_run["id"], workflow_run["artifacts_url"]))
                 return (workflow_run["artifacts_url"], workflow_run["id"])
         self.logger.error("can not find last run within workflow {}".format(self.workflow_name))
@@ -111,7 +113,7 @@ class GithubArtifactsReceiver:
             os.remove(self.old_artifacts_to_remove)
 
         filename = ""
-        self.logger.info("download {}".format(zip_url))
+        self.logger.info("download {}".format(zip_url.split("@")[1]))
         filename = wget.download(zip_url, self.artifacts_output_path + "/" + self.artifacts_name)
         self.logger.info("")
         self.logger.info("File {} downloaded".format(filename))
@@ -127,7 +129,7 @@ class GithubArtifactsReceiver:
 
 
     def call(self, url):
-        self.logger.info("call {}".format(url))
+        self.logger.info("call {}".format(url.split("@")[1]))
         r = requests.get(url)
         return json.loads(r.text.encode('utf-8'))
 
