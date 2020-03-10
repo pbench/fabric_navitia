@@ -331,7 +331,7 @@ def _test_kraken(query, fail_if_error=True):
     """
     print("calling : {}".format(query))
     try:
-        response = requests.get(query, timeout=2)
+        response = requests.get(query, timeout=5)
     except requests.exceptions.Timeout as t:
         print("timeout error {}".format(t))
         if fail_if_error:
