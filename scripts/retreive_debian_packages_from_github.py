@@ -105,7 +105,9 @@ class GithubArtifactsReceiver:
             self.logger.error("There must be only one artifacts - run id {}".format(run_id))
             self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
             sys.exit()
-        zip_url = self.url_header + resp["artifacts"][0]["archive_download_url"].replace('https://', '')
+
+        artifact_info = resp["artifacts"][0]
+        zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
 
         # Remove old artifacts with the same name if exist
         if os.path.isfile(self.old_artifacts_to_remove):
@@ -115,8 +117,13 @@ class GithubArtifactsReceiver:
         filename = ""
         self.logger.info("download {}".format(zip_url.split("@")[1]))
         filename = wget.download(zip_url, self.artifacts_output_path + "/" + self.artifacts_name)
-        self.logger.info("")
         self.logger.info("File {} downloaded".format(filename))
+        
+        expected_file_size = artifact_info["size_in_bytes"]
+        file_size = os.path.getsize(filename)
+        delta_size = abs(expected_file_size - file_size)
+        percent_diff_size = delta_size * 100. / file_size 
+        assert percent_diff_size < 0.1, "Downloaded file size ({} bytes) differs from expected size ({} bytes). \nDownload may have failed or disk may be full".format(file_size, expected_file_size)
 
 
     def _config_logger(self):
