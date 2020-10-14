@@ -139,12 +139,15 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     time_dict = TimeCollector()
     time_dict.register_start('total_deploy')
 
+    print("Up tyr")
     if up_tyr:
         execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=upgrade_db_tyr, skip_bina=skip_bina)
 
+    print("Check version")
     if check_version:
         execute(compare_version_candidate_installed)
 
+    print("Swap data nav")
     if not skip_bina:
         execute(kraken.swap_all_data_nav)
 
@@ -156,9 +159,11 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
             raw_input(yellow("Please disable ENG1,3/WS7-9 and enable ENG2,4/WS10-12"))
         else:
             execute(switch_to_first_phase, env.eng_haproxy1, env.ws_hosts_1, env.ws_hosts_2)
+    print("Upgrade kraken")
     execute(upgrade_kraken, wait=env.KRAKEN_RESTART_SCHEME, up_confs=up_confs, supervision=True)
     if check_dead:
         execute(kraken.check_dead_instances, not_loaded_instances)
+    print("Upgrade jormun")
     execute(upgrade_jormungandr, reload=False, up_confs=up_confs)
     # need restart apache without using upgrade_jormungandr task previously
     # because that causes a problem in prod
@@ -371,14 +376,12 @@ def check_last_dataset():
 
     for instance in env.instances.values():
         url = 'http://{}/v0/instances/{}/last_datasets'.format(env.tyr_url, instance)
-        print("calling : ", url)
         try:
             status = requests.get(url)
         except Exception as e:
             abort("Request failed: {} ({})".format(url, e))
 
         status_json = status.json()
-        print("status.json() : ", status_json)
         if status_json and isinstance(status_json, list):
             for elt in status_json:
                 print("elt : ", elt)
