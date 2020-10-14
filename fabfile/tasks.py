@@ -375,7 +375,9 @@ def check_last_dataset():
             abort("Request failed: {} ({})".format(url, e))
 
         if status.json():
+            print("status.json() : ", status.json())
             for elt in status.json():
+                print("elt : ", elt)
                 filename = elt['name']
                 family_type = elt['family_type']
                 # check existence of data file and remove into bdd if file is missing
@@ -430,7 +432,7 @@ def update_all_configurations(restart=True):
     does not deploy any packages
     """
     restart = get_bool_from_cli(restart)
-    
+
     execute(kraken.get_no_data_instances)
     execute(jormungandr.update_jormungandr_conf)
     execute(kraken.update_monitor_configuration)
@@ -457,14 +459,14 @@ def update_jormungandr_configurations(restart=True):
     does not deploy any packages
     """
     restart = get_bool_from_cli(restart)
-    
+
     execute(jormungandr.update_jormungandr_conf)
     for instance in env.instances.values():
         execute(jormungandr.deploy_jormungandr_instance_conf, instance)
     #once all has been updated, we restart all services (if needed)for the conf to be taken into account
     if restart:
         execute(jormungandr.reload_jormun_safe_all)
-        
+
         # and we test the jormungandr
         for server in env.roledefs['ws']:
             jormungandr.test_jormungandr(get_host_addr(server))
