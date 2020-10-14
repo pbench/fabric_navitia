@@ -371,6 +371,7 @@ def check_last_dataset():
 
     for instance in env.instances.values():
         url = 'http://{}/v0/instances/{}/last_datasets'.format(env.tyr_url, instance)
+        print("calling : ", url)
         try:
             status = requests.get(url)
         except Exception as e:
