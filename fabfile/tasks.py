@@ -112,12 +112,12 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
 
     # check if all krakens are running with data
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
-    not_loaded_instance_names = [instance.name for instance in not_loaded_instances]
+    not_loaded_instance_names = [instance_host.instance for instance_host in not_loaded_instances]
 
     # check one instance on each WS
     #TODO: Check all instance not only random one. #pylint: disable=fixme
     for server in env.roledefs['ws']:
-        loaded_instances_names = [name for name in env.instances.values() if name not in not_loaded_instance_names]
+        loaded_instances_names = [instance.name for instance in env.instances.values() if instance.name not in not_loaded_instance_names]
         instance_name = random.choice(loaded_instances_names)
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance_name)
 
