@@ -377,9 +377,10 @@ def check_last_dataset():
         except Exception as e:
             abort("Request failed: {} ({})".format(url, e))
 
-        if status.json():
-            print("status.json() : ", status.json())
-            for elt in status.json():
+        status_json = status.json()
+        print("status.json() : ", status_json)
+        if status_json and isinstance(status_json, list):
+            for elt in status_json:
                 print("elt : ", elt)
                 filename = elt['name']
                 family_type = elt['family_type']
