@@ -431,7 +431,7 @@ def launch_rebinarization_upgrade(pilot_supervision=True, pilot_tyr_beat=True, i
     try:
         if instances is None:
             execute(component.kraken.get_no_data_instances)
-            instances2process = set(env.instances)
+            instances2process = set(env.instances) - set(env.excluded_instances)
         else:
             instances2process = set(instances)
         instance2remove = set()

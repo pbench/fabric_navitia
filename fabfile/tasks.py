@@ -384,7 +384,6 @@ def check_last_dataset():
         status_json = status.json()
         if status_json and isinstance(status_json, list):
             for elt in status_json:
-                print("elt : ", elt)
                 filename = elt['name']
                 family_type = elt['family_type']
                 # check existence of data file and remove into bdd if file is missing
