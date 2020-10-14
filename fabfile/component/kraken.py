@@ -239,7 +239,7 @@ def get_not_loaded_instances_per_host():
             request = 'http://{}:{}/{}/?instance={}'.format(host, env.kraken_monitor_port,
                                                             env.kraken_monitor_location_dir, instance.name)
             result = _test_kraken(request, fail_if_error=False)
-            if not result or result['status'] == 'timeout' or result['loaded'] is False:
+            if not result or 'error' in result or result['status'] == 'timeout' or result['loaded'] is False:
                 not_loaded.append(instance_host(instance=instance.name, host=host))
 
     if not_loaded:
