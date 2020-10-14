@@ -113,11 +113,10 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     # check if all krakens are running with data
     not_loaded_instances = kraken.get_not_loaded_instances_per_host()
     not_loaded_instance_names = [instance_host.instance for instance_host in not_loaded_instances]
-
+    loaded_instances_names = [instance.name for instance in env.instances.values() if instance.name not in not_loaded_instance_names]
     # check one instance on each WS
     #TODO: Check all instance not only random one. #pylint: disable=fixme
     for server in env.roledefs['ws']:
-        loaded_instances_names = [instance.name for instance in env.instances.values() if instance.name not in not_loaded_instance_names]
         instance_name = random.choice(loaded_instances_names)
         execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance_name)
 
@@ -139,15 +138,12 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
     time_dict = TimeCollector()
     time_dict.register_start('total_deploy')
 
-    print("Up tyr")
     if up_tyr:
         execute(update_tyr_step, time_dict, only_bina=False, check_bina=check_bina, upgrade_db_tyr=upgrade_db_tyr, skip_bina=skip_bina)
 
-    print("Check version")
     if check_version:
         execute(compare_version_candidate_installed)
 
-    print("Swap data nav")
     if not skip_bina:
         execute(kraken.swap_all_data_nav)
 
@@ -159,11 +155,11 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
             raw_input(yellow("Please disable ENG1,3/WS7-9 and enable ENG2,4/WS10-12"))
         else:
             execute(switch_to_first_phase, env.eng_haproxy1, env.ws_hosts_1, env.ws_hosts_2)
-    print("Upgrade kraken")
+
     execute(upgrade_kraken, wait=env.KRAKEN_RESTART_SCHEME, up_confs=up_confs, supervision=True)
     if check_dead:
         execute(kraken.check_dead_instances, not_loaded_instances)
-    print("Upgrade jormun")
+
     execute(upgrade_jormungandr, reload=False, up_confs=up_confs)
     # need restart apache without using upgrade_jormungandr task previously
     # because that causes a problem in prod
@@ -198,8 +194,8 @@ def upgrade_all(up_tyr=True, up_confs=True, upgrade_db_tyr=True, check_version=T
             execute(kraken.check_dead_instances, not_loaded_instances)
         # check second hosts set
         for server in env.roledefs['ws']:
-            instance = random.choice(env.instances.values())
-            execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance.name)
+            instance = random.choice(loaded_instances_names)
+            execute(jormungandr.test_jormungandr, get_host_addr(server), instance=instance)
 
         env.roledefs['eng'] = env.eng_hosts
         if not manual_lb:
