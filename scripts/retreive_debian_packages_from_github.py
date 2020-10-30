@@ -57,7 +57,7 @@ class GithubArtifactsReceiver:
         self.artifacts_output_path = artifacts_output_path
         self.artifacts_name = artifacts_name
         self.old_artifacts_to_remove = self.artifacts_output_path + "/" + self.artifacts_name
-        self.url_header = "https://" + github_user +  ":" + github_token + "@"
+        self.url_header = "https://" + github_user + ":" + github_token + "@"
         self.workflows_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows"
         self.logger = logging.getLogger('github artifacts receiver')
         self._config_logger()
@@ -78,20 +78,20 @@ class GithubArtifactsReceiver:
     def retreive_artifacts_link_from_last_run(self, workflow_id):
         """ Retreive artifacts link from the last run """
         resp = self.call(self.workflows_url + "/" + str(workflow_id) + "/runs")
-        total_count = resp["total_count"]
-        for workflow_run in resp["workflow_runs"]:
-            if workflow_run["run_number"] == total_count:
-                if workflow_run["conclusion"] != "success":
-                    self.logger.error("the last job, id {}, is not success".format(workflow_run["id"]))
-                    sys.exit("the last job is not success")
-                if workflow_run["status"] != "completed":
-                    self.logger.error("the last job, id {}, is not completed".format(workflow_run["id"]))
-                    sys.exit("the last job is not completed")
-                self.logger.info("run id={} in success with artifacts url {}".format(workflow_run["id"], workflow_run["artifacts_url"]))
-                return (workflow_run["artifacts_url"], workflow_run["id"])
-        self.logger.error("can not find last run within workflow {}".format(self.workflow_name))
-        sys.exit("artifacts url does not exist")
+        last_workflow_run = max(resp["workflow_runs"], key=lambda w: w["run_number"])
+        self.logger.info("last run workflow_id: {}".format(last_workflow_run["workflow_id"]))
 
+        if last_workflow_run["conclusion"] != "success":
+            self.logger.error("the last job, id {}, is not success".format(last_workflow_run["id"]))
+            sys.exit("the last job is not success")
+
+        if last_workflow_run["status"] != "completed":
+            self.logger.error("the last job, id {}, is not completed".format(last_workflow_run["id"]))
+            sys.exit("the last job is not completed")
+
+        self.logger.info(
+            "run id={} in success with artifacts url {}".format(last_workflow_run["id"], last_workflow_run["artifacts_url"]))
+        return last_workflow_run["artifacts_url"], last_workflow_run["id"]
 
     def download_artifacts(self, artifacts_url, run_id):
         """ Download artifacts """
