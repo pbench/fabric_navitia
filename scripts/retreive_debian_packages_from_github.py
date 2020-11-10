@@ -47,22 +47,25 @@ import argparse
 
 DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev"
 DEFAULT_OUTPUT_PATH = "."
-DEFAULT_ARTIFACTS_NAME = "artifacts.zip"
+DEFAULT_ARTIFACTS_NAME = "navitia-debian-packages"
+
 
 class GithubArtifactsReceiver:
-    def __init__(self, github_user, github_token, workflow_name=DEFAULT_WORKFLOW_NAME, artifacts_name=DEFAULT_ARTIFACTS_NAME, artifacts_output_path=DEFAULT_OUTPUT_PATH):
+    def __init__(self, github_user, github_token, workflow_name=DEFAULT_WORKFLOW_NAME,
+                 artifacts_name=DEFAULT_ARTIFACTS_NAME, artifacts_output_path=DEFAULT_OUTPUT_PATH):
         self.github_user = github_user
         self.github_token = github_token
         self.workflow_name = workflow_name
         self.artifacts_output_path = artifacts_output_path
         self.artifacts_name = artifacts_name
-        self.old_artifacts_to_remove = self.artifacts_output_path + "/" + self.artifacts_name
+        self.artifacts_file_path = os.path.join(self.artifacts_output_path, "{}.zip".format(self.artifacts_name))
         self.url_header = "https://" + github_user + ":" + github_token + "@"
         self.workflows_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows"
         self.logger = logging.getLogger('github artifacts receiver')
         self._config_logger()
-        self.logger.info("load artifacts receiver with github_user={}, github_token=TOKEN, workflow_name={}, artifacts_name={}, output_path={}".format(self.github_user, self.workflow_name, self.artifacts_name, self.artifacts_output_path))
-
+        self.logger.info(
+            "load artifacts receiver with github_user={}, github_token=TOKEN, workflow_name={}, artifacts_name={}.zip, output_path={}".format(
+                self.github_user, self.workflow_name, self.artifacts_name, self.artifacts_output_path))
 
     def retreive_workflow_id(self):
         """ Retreive workflow id from Build Navitia Package """
@@ -73,7 +76,6 @@ class GithubArtifactsReceiver:
                 return workflow["id"]
         self.logger.error("workflow name={}, does not exist".format(self.workflow_name))
         sys.exit("workflow does not exist")
-
 
     def retreive_artifacts_link_from_last_run(self, workflow_id):
         """ Retreive artifacts link from the last run """
@@ -90,7 +92,8 @@ class GithubArtifactsReceiver:
             sys.exit("the last job is not completed")
 
         self.logger.info(
-            "run id={} in success with artifacts url {}".format(last_workflow_run["id"], last_workflow_run["artifacts_url"]))
+            "run id={} in success with artifacts url {}".format(last_workflow_run["id"],
+                                                                last_workflow_run["artifacts_url"]))
         return last_workflow_run["artifacts_url"], last_workflow_run["id"]
 
     def download_artifacts(self, artifacts_url, run_id):
@@ -99,32 +102,34 @@ class GithubArtifactsReceiver:
         resp = self.call(artifacts_url)
         if resp["total_count"] == 0:
             self.logger.error("No artifacts available for run {}".format(run_id))
-            self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
-            sys.exit()
-        if resp["total_count"] > 1:
-            self.logger.error("There must be only one artifacts - run id {}".format(run_id))
-            self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
+            self.logger.error(
+                "Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
             sys.exit()
 
-        artifact_info = resp["artifacts"][0]
+        artifact_info = next((arti for arti in resp["artifacts"] if arti['name'] == self.artifacts_name), None)
+        if artifact_info is None:
+            self.logger.error(
+                "Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
+            self.logger.error("Requested artifact do not exist: {}".format(self.artifacts_name))
+            sys.exit()
+
         zip_url = self.url_header + artifact_info["archive_download_url"].replace('https://', '')
 
         # Remove old artifacts with the same name if exist
-        if os.path.isfile(self.old_artifacts_to_remove):
-            self.logger.info("remove old artifacts - {}".format(self.old_artifacts_to_remove))
-            os.remove(self.old_artifacts_to_remove)
+        if os.path.isfile(self.artifacts_file_path):
+            self.logger.info("remove old artifacts - {}".format(self.artifacts_file_path))
+            os.remove(self.artifacts_file_path)
 
-        filename = ""
         self.logger.info("download {}".format(zip_url.split("@")[1]))
-        filename = wget.download(zip_url, self.artifacts_output_path + "/" + self.artifacts_name)
+        filename = wget.download(zip_url, self.artifacts_file_path)
         self.logger.info("File {} downloaded".format(filename))
-        
+
         expected_file_size = artifact_info["size_in_bytes"]
         file_size = os.path.getsize(filename)
         delta_size = abs(expected_file_size - file_size)
-        percent_diff_size = delta_size * 100. / file_size 
-        assert percent_diff_size < 0.1, "Downloaded file size ({} bytes) differs from expected size ({} bytes). \nDownload may have failed or disk may be full".format(file_size, expected_file_size)
-
+        percent_diff_size = delta_size * 100. / file_size
+        assert percent_diff_size < 0.1, "Downloaded file size ({} bytes) differs from expected size ({} bytes). \nDownload may have failed or disk may be full".format(
+            file_size, expected_file_size)
 
     def _config_logger(self):
         self.logger.setLevel(logging.DEBUG)
@@ -134,12 +139,10 @@ class GithubArtifactsReceiver:
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
 
-
     def call(self, url):
         self.logger.info("call {}".format(url.split("@")[1]))
         r = requests.get(url)
         return json.loads(r.text.encode('utf-8'))
-
 
     def check_github_api(self):
         self.logger.info("check github actions API")
@@ -150,7 +153,6 @@ class GithubArtifactsReceiver:
             self.logger.error("github API status {}".format(r.status_code))
             self.logger.error("stop process")
             sys.exit("github API status != 200")
-
 
     def run(self):
         workflow_id = self.retreive_workflow_id()
@@ -167,6 +169,7 @@ def config_logger():
     ch.setFormatter(formatter)
     logger.addHandler(ch)
     return logger
+
 
 def parse_args(parser, logger):
     parser = argparse.ArgumentParser()
@@ -195,11 +198,13 @@ def main():
 
     args = parse_args(argparse.ArgumentParser(), logger)
 
-    artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
+    artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name,
+                                                 args.artifacts_name, args.output_dir)
     artifacts_receiver.check_github_api()
     artifacts_receiver.run()
 
     logger.info("finish process")
+
 
 if __name__ == "__main__":
     main()
