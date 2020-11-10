@@ -58,7 +58,7 @@ class GithubArtifactsReceiver:
         self.workflow_name = workflow_name
         self.artifacts_output_path = artifacts_output_path
         self.artifacts_name = artifacts_name
-        self.artifacts_file_path = os.path.join(self.artifacts_output_path, "{}.zip".format(self.artifacts_name))
+        self.artifacts_file_path = os.path.join(self.artifacts_output_path, "artifacts.zip")
         self.url_header = "https://" + github_user + ":" + github_token + "@"
         self.workflows_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows"
         self.logger = logging.getLogger('github artifacts receiver')
