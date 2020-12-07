@@ -48,20 +48,22 @@ import argparse
 DEFAULT_WORKFLOW_NAME = "Build Navitia Packages For Dev"
 DEFAULT_OUTPUT_PATH = "."
 DEFAULT_ARTIFACTS_NAME = "artifacts.zip"
+DEFAULT_GIT_REPO ="CanalTP/navitia"
 
 class GithubArtifactsReceiver:
-    def __init__(self, github_user, github_token, workflow_name=DEFAULT_WORKFLOW_NAME, artifacts_name=DEFAULT_ARTIFACTS_NAME, artifacts_output_path=DEFAULT_OUTPUT_PATH):
+    def __init__(self, github_user, github_token, workflow_name=DEFAULT_WORKFLOW_NAME, artifacts_name=DEFAULT_ARTIFACTS_NAME, artifacts_output_path=DEFAULT_OUTPUT_PATH, git_repo=DEFAULT_GIT_REPO):
         self.github_user = github_user
         self.github_token = github_token
         self.workflow_name = workflow_name
         self.artifacts_output_path = artifacts_output_path
         self.artifacts_name = artifacts_name
+        self.git_repo=git_repo
         self.old_artifacts_to_remove = self.artifacts_output_path + "/" + self.artifacts_name
         self.url_header = "https://" + github_user + ":" + github_token + "@"
-        self.workflows_url = self.url_header + "api.github.com/repos/CanalTP/navitia/actions/workflows"
+        self.workflows_url = self.url_header + "api.github.com/repos/" + self.git_repo + "/actions/workflows"
         self.logger = logging.getLogger('github artifacts receiver')
         self._config_logger()
-        self.logger.info("load artifacts receiver with github_user={}, github_token=TOKEN, workflow_name={}, artifacts_name={}, output_path={}".format(self.github_user, self.workflow_name, self.artifacts_name, self.artifacts_output_path))
+        self.logger.info("load artifacts receiver with github_user={}, github_token=TOKEN, workflow_name={}, artifacts_name={}, output_path={}, git_repo={}".format(self.github_user, self.workflow_name, self.artifacts_name, self.artifacts_output_path, self.git_repo))
 
 
     def retreive_workflow_id(self):
@@ -99,11 +101,11 @@ class GithubArtifactsReceiver:
         resp = self.call(artifacts_url)
         if resp["total_count"] == 0:
             self.logger.error("No artifacts available for run {}".format(run_id))
-            self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
+            self.logger.error("Artifacts: https://api.github.com/repos/{}/actions/runs/{}/artifacts".format(DEFAULT_REPO, run_id))
             sys.exit()
         if resp["total_count"] > 1:
             self.logger.error("There must be only one artifacts - run id {}".format(run_id))
-            self.logger.error("Artifacts: https://api.github.com/repos/CanalTP/navitia/actions/runs/{}/artifacts".format(run_id))
+            self.logger.error("Artifacts: https://api.github.com/repos/{}/actions/runs/{}/artifacts".format(DEFAULT_REPO, run_id))
             sys.exit()
 
         artifact_info = resp["artifacts"][0]
@@ -116,6 +118,7 @@ class GithubArtifactsReceiver:
 
         filename = ""
         self.logger.info("download {}".format(zip_url.split("@")[1]))
+        self.logger.info("download {}".format(zip_url))
         filename = wget.download(zip_url, self.artifacts_output_path + "/" + self.artifacts_name)
         self.logger.info("File {} downloaded".format(filename))
         
@@ -175,6 +178,7 @@ def parse_args(parser, logger):
     parser.add_argument("-w", dest="workflow_name", help="Github Workflow name", default=DEFAULT_WORKFLOW_NAME)
     parser.add_argument("-a", dest="artifacts_name", help="Artifacts name", default=DEFAULT_ARTIFACTS_NAME)
     parser.add_argument("-o", dest="output_dir", help="Output path", default=DEFAULT_OUTPUT_PATH)
+    parser.add_argument("-r", dest="repo", help="Github repository (default = CanalTP/navitia)", default=DEFAULT_GIT_REPO)
     args = parser.parse_args()
 
     if not args.github_user:
@@ -195,7 +199,7 @@ def main():
 
     args = parse_args(argparse.ArgumentParser(), logger)
 
-    artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir)
+    artifacts_receiver = GithubArtifactsReceiver(args.github_user, args.github_token, args.workflow_name, args.artifacts_name, args.output_dir, args.repo)
     artifacts_receiver.check_github_api()
     artifacts_receiver.run()
 

@@ -24,10 +24,10 @@ pip install -r requirements.txt
 
 ```
 # Help
-pythonn2.7 retreive_debian_packages_from_github.py -h
+python2.7 retreive_debian_packages_from_github.py -h
 
 # Example
-pythonn2.7 retreive_debian_packages_from_github.py -u {GithubUser} -t {GithubToken} -w {workflow name} -a {artifacts.zip} -o {output_path}
+python2.7 retreive_debian_packages_from_github.py -u {GithubUser} -t {GithubToken} -r {github_repo} -w {workflow name} -a {artifacts.zip} -o {output_path}
 ```
 
 
